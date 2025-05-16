@@ -1,0 +1,152 @@
+---
+description: This rule explains the Module Factory Pattern used in the project for centralized dependency management. It details how each feature module uses factory classes to handle dependency injection, provide singleton instances, manage component lifecycles, and implement consistent error handling, with practical code examples for creating and using module components.
+globs: 
+alwaysApply: false
+---
+# Module Factory Pattern
+
+The Module Factory Pattern provides centralized dependency injection, factory methods, and error handling for each feature module.
+
+## Purpose
+
+- Serve as a single entry point to create module components
+- Manage dependencies and their lifecycle
+- Provide centralized error handling
+- Implement the Dependency Inversion Principle
+
+## Structure
+
+```
+src/modules/<module-name>/
+└── <ModuleName>Module.ts
+```
+
+## Guidelines
+
+1. **Static Factory Methods**: Provide static methods to create use cases and services
+2. **Singleton Dependencies**: Manage singleton instances of repositories and services
+3. **Lazy Initialization**: Initialize dependencies only when needed
+4. **Dependency Graph**: Handle the complete dependency graph for the module
+5. **Common Error Handling**: Provide module-specific error handling utilities
+
+## Example Implementation
+
+```typescript
+// UsersModule.ts
+import { UserRepository } from './infrastructure/repositories/UserRepository';
+import { UserService } from './application/services/UserService';
+import { CreateUserUseCase } from './application/usecases/CreateUser.usecase';
+import { GetUserUseCase } from './application/usecases/GetUser.usecase';
+import { IUserRepository } from './domain/interfaces/IUserRepository';
+import { IUserService } from './domain/interfaces/IUserService';
+import { handleUserError, logUserError } from './application/utils/errorHandler';
+import { DatabaseAdapter } from '@/infrastructure/database/DatabaseAdapter';
+
+/**
+ * Factory class for the Users module
+ * Handles dependency injection and creates instances of repositories, services, and use cases
+ */
+export class UsersModule {
+  private static repository: IUserRepository | null = null;
+  private static service: IUserService | null = null;
+
+  /**
+   * Get the user repository instance (singleton)
+   */
+  static getRepository(): IUserRepository {
+    if (!this.repository) {
+      const dbAdapter = new DatabaseAdapter();
+      this.repository = new UserRepository(dbAdapter);
+    }
+    return this.repository;
+  }
+
+  /**
+   * Get the user service instance (singleton)
+   */
+  static getService(): IUserService {
+    if (!this.service) {
+      this.service = new UserService(this.getRepository());
+    }
+    return this.service;
+  }
+
+  /**
+   * Create a new CreateUserUseCase instance
+   */
+  static createCreateUserUseCase(): CreateUserUseCase {
+    return new CreateUserUseCase(this.getService());
+  }
+
+  /**
+   * Create a new GetUserUseCase instance
+   */
+  static createGetUserUseCase(): GetUserUseCase {
+    return new GetUserUseCase(this.getService());
+  }
+
+  /**
+   * Handle user errors consistently
+   * @param error The error to handle
+   * @returns A user-friendly error response
+   */
+  static handleError(error: unknown) {
+    return handleUserError(error);
+  }
+
+  /**
+   * Log user errors with context
+   * @param error The error to log
+   * @param context Additional context information
+   */
+  static logError(error: unknown, context?: string) {
+    logUserError(error, context);
+  }
+
+  /**
+   * Reset all module instances (useful for testing)
+   */
+  static reset(): void {
+    this.repository = null;
+    this.service = null;
+  }
+}
+```
+
+## Usage Example
+
+```typescript
+// In a React hook or component
+import { UsersModule } from '@/modules/users/UsersModule';
+
+export function useCreateUser() {
+  const createUser = async (userData) => {
+    try {
+      const createUserUseCase = UsersModule.createCreateUserUseCase();
+      return await createUserUseCase.execute(userData);
+    } catch (error) {
+      // Use module's error handling
+      const handledError = UsersModule.handleError(error);
+      throw handledError;
+    }
+  };
+
+  return { createUser };
+}
+```
+
+## Benefits
+
+1. **Centralized Dependency Management**: Single place to configure module dependencies
+2. **Consistent Error Handling**: Module-specific error handling
+3. **Testability**: Easy to mock dependencies for testing
+4. **Encapsulation**: Encapsulates module implementation details
+5. **Configuration**: Central place for module configuration
+
+## Best Practices
+
+1. **Keep It Simple**: Don't overcomplicate the factory with too many responsibilities
+2. **Single Responsibility**: Factory should only handle dependency injection and creation
+3. **Clear API**: Provide clear factory methods with descriptive names
+4. **Error Handling**: Include centralized error handling utilities
+5. **Reset Functionality**: Add a reset method for testing purposes

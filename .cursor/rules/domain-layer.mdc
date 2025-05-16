@@ -1,0 +1,96 @@
+---
+description: 
+globs: src/modules/*/domain/**/*.ts, src/modules/**/domain/**/*.ts
+alwaysApply: false
+---
+# Domain Layer
+
+The Domain Layer represents the core business logic and rules of the application, independent of any external frameworks or implementation details.
+
+## Responsibilities
+
+- Define business entities and value objects
+- Declare repository and service interfaces
+- Handle domain-specific errors and exceptions
+- Establish business rules and invariants
+
+## Structure
+
+```
+domain/
+├── entities/       - Core business objects
+├── interfaces/     - Contracts for repositories and services
+├── errors/         - Domain-specific error classes
+└── valueObjects/   - Small immutable objects with equality based on values
+```
+
+## Guidelines
+
+1. **Keep It Pure**: No dependencies on application, infrastructure, or presentation layers
+2. **Use Immutability**: Prefer immutable objects when possible
+3. **Rich Domain Model**: Encapsulate business logic within entities where appropriate
+4. **Clear Interfaces**: Define clear contracts that infrastructure will implement
+5. **Proper Validation**: Domain objects should validate their own state
+
+## Examples
+
+### Entity
+
+```typescript
+export class User {
+  constructor(
+    public readonly id: string,
+    public readonly email: string,
+    private _name: string
+  ) {
+    this.validateEmail(email);
+  }
+
+  // Getter
+  get name(): string {
+    return this._name;
+  }
+  
+  // Domain logic
+  updateName(newName: string): User {
+    return new User(this.id, this.email, newName);
+  }
+  
+  // Validation
+  private validateEmail(email: string): void {
+    if (!email.includes('@')) {
+      throw new InvalidEmailError(email);
+    }
+  }
+}
+```
+
+### Repository Interface
+
+```typescript
+export interface IUserRepository {
+  findById(id: string): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
+  save(user: User): Promise<void>;
+  delete(id: string): Promise<boolean>;
+}
+```
+
+### Domain Error
+
+```typescript
+export class InvalidEmailError extends Error {
+  constructor(email: string) {
+    super(`Invalid email format: ${email}`);
+    this.name = 'InvalidEmailError';
+  }
+}
+```
+
+## Best Practices
+
+1. **No External Dependencies**: Domain should not depend on frameworks, databases, or UI
+2. **Business Language**: Use ubiquitous language from the domain in naming
+3. **Domain Events**: Consider using domain events for cross-entity coordination
+4. **Value Objects**: Use value objects for concepts with no identity but with validation
+5. **Clear Boundaries**: Keep domain logic isolated from implementation details

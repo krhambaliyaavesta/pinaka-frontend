@@ -1,0 +1,172 @@
+---
+description: 
+globs: src/modules/*/infrastructure/**/*.ts, src/modules/**/infrastructure/**/*.tsx
+alwaysApply: false
+---
+# Infrastructure Layer
+
+The Infrastructure Layer provides concrete implementations of interfaces defined in the domain layer. It handles technical concerns like data persistence, external services integration, and frameworks.
+
+## Responsibilities
+
+- Implement repository interfaces
+- Manage database connections and queries
+- Handle external API communications
+- Provide storage mechanisms (local, remote)
+- Integrate with third-party services and libraries
+
+## Structure
+
+```
+infrastructure/
+├── repositories/   - Repository implementations
+├── storage/        - Storage implementations
+├── apis/           - External API clients
+├── adapters/       - Adapters for external services
+└── database/       - Database configurations
+```
+
+## Guidelines
+
+1. **Implement Domain Interfaces**: Provide concrete implementations of domain interfaces
+2. **Isolate External Dependencies**: Contain and isolate external frameworks and libraries
+3. **Handle Technical Concerns**: Address caching, connection pooling, etc.
+4. **Adapt External Data**: Transform external data formats to domain objects
+5. **Error Handling**: Translate infrastructure errors to domain-specific errors
+
+## Examples
+
+### Repository Implementation
+
+```typescript
+export class PostgresUserRepository implements IUserRepository {
+  constructor(private db: DatabaseConnection) {}
+  
+  async findById(id: string): Promise<User | null> {
+    try {
+      const result = await this.db.query(
+        'SELECT * FROM users WHERE id = $1',
+        [id]
+      );
+      
+      if (result.rows.length === 0) {
+        return null;
+      }
+      
+      // Map database row to domain entity
+      return this.mapRowToUser(result.rows[0]);
+    } catch (error) {
+      // Transform database errors to domain errors
+      if (error instanceof DatabaseConnectionError) {
+        throw new RepositoryError('Failed to connect to database');
+      }
+      throw error;
+    }
+  }
+  
+  async save(user: User): Promise<void> {
+    try {
+      await this.db.query(
+        'INSERT INTO users (id, email, name) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET email = $2, name = $3',
+        [user.id, user.email, user.name]
+      );
+    } catch (error) {
+      // Handle specific database errors
+      if (error.code === '23505') { // Unique violation
+        throw new DuplicateUserError(user.id);
+      }
+      throw new RepositoryError('Failed to save user');
+    }
+  }
+  
+  private mapRowToUser(row: any): User {
+    return new User(
+      row.id,
+      row.email,
+      row.name
+    );
+  }
+}
+```
+
+### Storage Implementation
+
+```typescript
+export class LocalStorageUserPreferences implements IUserPreferencesStorage {
+  private readonly keyPrefix = 'user_pref_';
+  
+  savePreference(userId: string, key: string, value: string): void {
+    try {
+      const storageKey = `${this.keyPrefix}${userId}_${key}`;
+      localStorage.setItem(storageKey, value);
+    } catch (error) {
+      // Handle storage errors (e.g., quota exceeded)
+      console.error('Failed to save preference:', error);
+      throw new StorageError('Failed to save user preference');
+    }
+  }
+  
+  getPreference(userId: string, key: string): string | null {
+    try {
+      const storageKey = `${this.keyPrefix}${userId}_${key}`;
+      return localStorage.getItem(storageKey);
+    } catch (error) {
+      console.error('Failed to get preference:', error);
+      throw new StorageError('Failed to retrieve user preference');
+    }
+  }
+  
+  clearPreferences(userId: string): void {
+    // Implementation for clearing user preferences
+  }
+}
+```
+
+### API Client
+
+```typescript
+export class WeatherApiClient implements IWeatherService {
+  constructor(
+    private httpClient: HttpClient,
+    private apiKey: string
+  ) {}
+  
+  async getCurrentWeather(location: string): Promise<WeatherInfo> {
+    try {
+      const response = await this.httpClient.get(
+        `https://api.weather.com/current`,
+        {
+          params: {
+            location,
+            apiKey: this.apiKey
+          }
+        }
+      );
+      
+      // Map API response to domain model
+      return {
+        temperature: response.data.temp,
+        conditions: response.data.conditions,
+        location: response.data.location
+      };
+    } catch (error) {
+      if (error.response?.status === 404) {
+        throw new LocationNotFoundError(location);
+      }
+      if (error.response?.status === 401) {
+        throw new ApiAuthenticationError('Invalid API key');
+      }
+      throw new WeatherServiceError('Failed to fetch weather data');
+    }
+  }
+}
+```
+
+## Best Practices
+
+1. **Decouple External Dependencies**: Use adapters to isolate external dependencies
+2. **Error Translation**: Convert infrastructure-specific errors to domain errors
+3. **Optimize for Performance**: Handle caching, connection pooling at this layer
+4. **Testing**: Make infrastructure components easily mockable for testing
+5. **Configuration Management**: Externalize configuration from code
+6. **Security**: Implement appropriate security measures (input validation, authentication)

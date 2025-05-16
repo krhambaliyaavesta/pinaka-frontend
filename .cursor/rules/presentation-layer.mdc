@@ -1,0 +1,106 @@
+---
+description: 
+globs: src/presentation/**/*.ts
+alwaysApply: false
+---
+# Presentation Layer
+
+The Presentation Layer handles all user interactions and displays information to users. It contains UI components, forms, pages, and view logic. Unlike domain, application, and infrastructure layers that live inside module folders, the presentation layer exists at the root level in `/src/presentation/`.
+
+## Responsibilities
+
+- Present data to users in a readable format
+- Handle user input and interactions
+- Maintain UI state
+- Provide feedback to users
+- Consume application layer hooks/services from domain modules
+
+## Structure (Following Atomic Design)
+
+```
+src/
+└── presentation/                     - All UI components
+    ├── atoms/                        - Basic UI elements
+    │   ├── common/                   - Shared atoms
+    │   └── <feature-name>/           - Feature-specific atoms
+    ├── molecules/                    - Composite components 
+    │   ├── common/                   - Shared molecules
+    │   └── <feature-name>/           - Feature-specific molecules
+    ├── organisms/                    - Complex components
+    │   ├── common/                   - Shared organisms
+    │   └── <feature-name>/           - Feature-specific organisms
+    ├── templates/                    - Page layouts
+    │   ├── common/                   - Shared templates
+    │   └── <feature-name>/           - Feature-specific templates
+    └── pages/                        - Full pages
+        └── <feature-name>/           - Feature-specific pages
+```
+
+## Guidelines
+
+1. **Separate from Business Logic**: Presentation layer is strictly separate from business modules
+2. **Module Integration**: Components connect to modules via application layer hooks
+3. **Feature Organization**: Components are organized by feature within atomic design categories
+4. **Component Independence**: Each component should be independently testable
+5. **Atomic Design Hierarchy**: Follow the atomic design pattern (atoms → molecules → organisms → templates → pages)
+
+## Module Integration
+
+```tsx
+// Example of how a presentation component integrates with a module
+import { useRegionSelection } from '@/modules/regions/application/hooks/useRegionSelection';
+
+export function RegionSelector() {
+  const { regions, selectRegion, loading, error } = useRegionSelection();
+  
+  // Component implementation using the hook from the module
+  // ...
+}
+```
+
+## Feature Organization
+
+For feature-specific components, organize by feature first, then by atomic design category:
+
+```
+src/presentation/atoms/regions/Button/Button.tsx
+src/presentation/molecules/regions/RegionList/RegionList.tsx
+src/presentation/organisms/regions/RegionSelectionForm/RegionSelectionForm.tsx
+src/presentation/templates/regions/RegionSelectionModal/RegionSelectionModal.tsx
+src/presentation/pages/regions/RegionPrompt.tsx
+```
+
+## Export Pattern
+
+Use barrel exports to simplify imports:
+
+```typescript
+// src/presentation/regions.ts
+// Atoms
+export * from './atoms/regions/Button/Button';
+export * from './atoms/regions/RadioInput/RadioInput';
+
+// Molecules
+export * from './molecules/regions/RegionList/RegionList';
+
+// Organisms
+export * from './organisms/regions/RegionSelectionForm/RegionSelectionForm';
+
+// Templates
+export * from './templates/regions/RegionSelectionModal/RegionSelectionModal';
+
+// Pages
+export * from './pages/regions/RegionPrompt';
+```
+
+## Best Practices
+
+1. **Pure Presentation Components**: Components should focus only on rendering and user interaction
+2. **Data Fetching in Hooks**: Data fetching logic should be in module hooks, not components
+3. **Prop Drilling Minimization**: Use context or composition to avoid excessive prop drilling
+4. **Consistent Naming**: Use consistent naming conventions across all components
+5. **Component Documentation**: Document component props and usage examples
+6. **Error and Loading States**: Always handle loading and error states in the UI
+7. **Responsive Design**: Ensure all components work well on different screen sizes
+8. **Accessibility**: Follow WCAG guidelines for accessibility
+9. **Independent Testing**: Each component should be independently testable

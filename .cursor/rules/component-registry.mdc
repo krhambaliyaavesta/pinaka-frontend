@@ -1,0 +1,180 @@
+---
+description: 
+globs: ["src/presentation/**/*.ts"]
+alwaysApply: false
+---
+# Component Registry System
+
+The Component Registry system provides a centralized catalog of all UI components in the application. It helps maintain organization, prevents duplication, and makes components easier to discover, especially when developing with AI assistance.
+
+## Purpose
+
+1. **Discoverability**: Makes it easy to find and reuse existing components
+2. **Organization**: Provides a clear catalog of all available components
+3. **Prevention of Duplication**: Helps avoid creating duplicate components
+4. **Metadata**: Stores additional component information for better understanding
+5. **AI-Friendly Architecture**: Structured for easy AI-assisted development
+
+## Registry Structure
+
+```
+src/presentation/registry/
+├── index.ts                - Main registry exports and helper functions
+├── types.ts                - Type definitions for component metadata
+├── atoms.registry.ts       - Registry of all atom components
+├── molecules.registry.ts   - Registry of all molecule components
+├── organisms.registry.ts   - Registry of all organism components
+├── templates.registry.ts   - Registry of all template components
+└── pages.registry.ts       - Registry of all page components
+```
+
+## Implementation Details
+
+### Registry Types
+
+```typescript
+// src/presentation/registry/types.ts
+export interface ComponentMeta {
+  name: string;
+  description: string;
+  props: PropDefinition[];
+  examples: string[];
+}
+
+export interface PropDefinition {
+  name: string;
+  type: string;
+  description: string;
+  required: boolean;
+  defaultValue?: any;
+}
+```
+
+### Component Registration
+
+Each registry file follows a consistent pattern for registering components:
+
+```typescript
+// src/presentation/registry/atoms.registry.ts
+import { Button } from '../atoms/common/Button/Button';
+import { RadioInput } from '../atoms/regions/selection/RadioInput/RadioInput';
+import { ComponentMeta } from './types';
+
+// Common components
+export const CommonAtoms = {
+  Button: {
+    component: Button,
+    meta: {/* Button metadata */}
+  },
+  // ...other common atoms
+};
+
+// Module-specific components
+export const RegionsAtoms = {
+  selection: {
+    RadioInput: {
+      component: RadioInput,
+      meta: {/* RadioInput metadata */}
+    },
+    // ...other selection atoms
+  },
+  details: {
+    Badge: {
+      component: Badge,
+      meta: {/* Badge metadata */}
+    },
+    // ...other details atoms
+  }
+};
+
+// Main export
+export const Atoms = {
+  common: CommonAtoms,
+  regions: RegionsAtoms,
+  // other modules...
+};
+```
+
+### Main Registry Export
+
+```typescript
+// src/presentation/registry/index.ts
+import { Atoms } from './atoms.registry';
+import { Molecules } from './molecules.registry';
+import { Organisms } from './organisms.registry';
+import { Templates } from './templates.registry';
+import { Pages } from './pages.registry';
+
+export const ComponentRegistry = {
+  atoms: Atoms,
+  molecules: Molecules,
+  organisms: Organisms,
+  templates: Templates,
+  pages: Pages
+};
+
+// Helper functions for component retrieval
+export function getCommonAtom(name: string) {
+  return ComponentRegistry.atoms.common[name]?.component;
+}
+
+export function getModuleAtom(module: string, feature: string, name: string) {
+  return ComponentRegistry.atoms[module]?.[feature]?.[name]?.component;
+}
+
+// Component discovery
+export function searchComponents(query: string) {
+  // Search through component names and descriptions
+  // Returns matching components
+}
+```
+
+## Usage Examples
+
+### Basic Import
+
+```tsx
+// Import specific components
+import { Button } from '@/presentation/atoms/common/Button/Button';
+
+// Or use the registry
+import { getCommonAtom } from '@/presentation/registry';
+const Button = getCommonAtom('Button');
+```
+
+### Component Discovery
+
+```tsx
+import { findComponentsByFeature, searchComponents } from '@/presentation/registry';
+
+// Find all atom components in the "selection" feature of the "regions" module
+const selectionAtoms = findComponentsByFeature('atoms', 'regions', 'selection');
+
+// Search for components matching a query
+const searchResults = searchComponents('button');
+```
+
+## Automated Registry Generation
+
+To keep the registry up-to-date without manual work, create a script that scans your component directories and generates/updates registry files.
+
+## AI Development Guidelines
+
+When developing with AI assistance, follow these patterns:
+
+1. **Creating New Components**:
+   - Check if a similar component already exists using `searchComponents`
+   - Place the component in the correct directory structure
+   - Add it to the appropriate registry file with metadata
+
+2. **Using Existing Components**:
+   - Use the registry to find appropriate components
+   - Reference components using the helper functions
+
+## Best Practices
+
+1. **Keep Registry Updated**: Always register new components in the registry
+2. **Rich Metadata**: Provide detailed descriptions and examples for each component
+3. **Use Helper Functions**: Use registry helper functions rather than direct imports when appropriate
+4. **Component Search First**: Before creating new components, search existing ones
+5. **Automated Updates**: Use scripts to automate registry updates when possible

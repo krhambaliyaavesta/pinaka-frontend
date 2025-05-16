@@ -1,0 +1,171 @@
+---
+description: 
+globs: src/modules/*/application/**/*.ts,src/modules/**/application/**/*.ts
+alwaysApply: false
+---
+# Application Layer
+
+The Application Layer orchestrates the flow of data and actions between the domain and presentation layers in frontend applications. It contains use cases, services, and application-level logic that connects UI components to domain functionality.
+
+## Responsibilities
+
+- Implement use cases (application-specific operations)
+- Coordinate domain services and entities
+- Handle application-level errors and exceptions
+- Provide hooks for UI integration
+- Manage state transformations for UI consumption
+
+## Structure
+
+```
+application/
+├── usecases/    - Specific business operations
+├── services/    - Application services
+├── hooks/       - React hooks for UI integration
+└── utils/       - Helper functions and error handlers
+```
+
+## Guidelines
+
+1. **Focused Use Cases**: Each use case should handle one specific operation
+2. **UI-Ready Data**: Transform domain data into formats ready for UI consumption
+3. **Error Handling**: Provide user-friendly error handling
+4. **State Management**: Manage application state with hooks
+5. **Dependency Injection**: Receive dependencies through module factories
+
+## Examples
+
+### Use Case
+
+```typescript
+export class GetRegionsUseCase {
+  constructor(private regionService: IRegionService) {}
+
+  async execute(): Promise<Region[]> {
+    try {
+      return await this.regionService.getRegions();
+    } catch (error) {
+      // Transform domain errors to user-friendly errors
+      throw handleApplicationError(error);
+    }
+  }
+}
+```
+
+### Application Service
+
+```typescript
+export class RegionService implements IRegionService {
+  constructor(private regionRepository: IRegionRepository) {}
+  
+  async getRegions(): Promise<Region[]> {
+    try {
+      return await this.regionRepository.getRegions();
+    } catch (error) {
+      throw handleRegionError(error);
+    }
+  }
+  
+  async getRegionById(id: string): Promise<Region | null> {
+    try {
+      return await this.regionRepository.getRegionById(id);
+    } catch (error) {
+      throw handleRegionError(error);
+    }
+  }
+}
+```
+
+### React Hook
+
+```typescript
+export function useRegionSelection() {
+  const [regions, setRegions] = useState<Region[]>([]);
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [hasSelectedRegion, setHasSelectedRegion] = useState(false);
+  
+  // Load regions on component mount
+  useEffect(() => {
+    const loadRegions = async () => {
+      try {
+        setLoading(true);
+        
+        // Create and execute use case via module factory
+        const getRegionsUseCase = RegionsModule.createGetRegionsUseCase();
+        const regionsData = await getRegionsUseCase.execute();
+        
+        setRegions(regionsData);
+        
+        // Check if user already has a selected region
+        const userRegionStorage = RegionsModule.getUserRegionStorage();
+        const userRegionId = userRegionStorage.getUserRegion();
+        
+        if (userRegionId) {
+          setHasSelectedRegion(true);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to load regions'));
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadRegions();
+  }, []);
+  
+  // Function to handle region selection
+  const selectRegion = async (regionId: string): Promise<boolean> => {
+    try {
+      const setUserRegionUseCase = RegionsModule.createSetUserRegionUseCase();
+      await setUserRegionUseCase.execute(regionId);
+      
+      setSelectedRegionId(regionId);
+      setHasSelectedRegion(true);
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to select region'));
+      return false;
+    }
+  };
+  
+  return {
+    regions,
+    selectedRegionId,
+    hasSelectedRegion,
+    loading,
+    error,
+    selectRegion
+  };
+}
+```
+
+## State Transformations
+
+In frontend applications, the application layer often needs to transform domain data into UI-friendly formats:
+
+```typescript
+// Transform domain data for UI consumption
+function transformEventForUI(event: Event): UIEventData {
+  return {
+    id: event.id,
+    title: event.name,
+    formattedDate: formatDate(event.date), // "May 15, 2023"
+    isActive: event.status === 'active',
+    displayStatus: getHumanReadableStatus(event.status),
+    actionLabel: getActionLabel(event.status, event.isRegistered)
+  };
+}
+```
+
+## Best Practices
+
+1. **React Hook Patterns**: Use consistent patterns for React hooks
+2. **Loading and Error States**: Always include loading and error states in hooks
+3. **Optimistic Updates**: Consider optimistic UI updates for better user experience
+4. **Memoization**: Use useMemo and useCallback for performance optimization
+5. **Custom Hook Composition**: Compose complex hooks from simpler ones
+6. **Testing Hooks**: Make hooks testable with proper dependency injection
+7. **Centralized Error Handling**: Handle errors consistently across the application
+8. **Keep UI Logic Separate**: Focus on data and state management, not UI rendering

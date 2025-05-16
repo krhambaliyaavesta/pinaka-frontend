@@ -1,0 +1,46 @@
+---
+description: This rule provides a comprehensive guide to the project's Clean Architecture implementation with distinct layers (domain, application, infrastructure, presentation). It covers the module structure, dependency rules, and architectural principles that ensure code quality, testability, and scalability, including examples for each architectural layer.
+globs: 
+alwaysApply: false
+---
+# Clean Architecture Overview
+
+This project follows Clean Architecture principles with distinct layers and clear separation of concerns. These architectural guidelines help maintain code quality, testability, and scalability as the project grows.
+
+## Core Architectural Layers
+
+1. [Domain Layer](mdc:.cursor/rules/domain-layer.mdc) - Core business entities and rules
+2. [Application Layer](mdc:.cursor/rules/application-layer.mdc) - Use cases and application services
+3. [Infrastructure Layer](mdc:.cursor/rules/infrastructure-layer.mdc) - External implementations and adapters
+4. [Presentation Layer](mdc:.cursor/rules/presentation-layer.mdc) - UI components and user interactions
+   - Based on [Atomic Design](mdc:.cursor/rules/atomic-architecture.mdc) principles
+   - Organized with [Component Registry](mdc:.cursor/rules/component-registry.mdc) system
+
+## Module Structure
+
+Each feature is organized as a self-contained module with the following structure:
+
+```
+src/modules/<module-name>/
+├── domain/                - Business entities and rules
+├── application/           - Use cases and application services
+├── infrastructure/        - External implementations
+├── <ModuleName>Module.ts  - Module factory 
+└── index.ts               - Public API exports
+```
+
+## Key Principles
+
+1. **Dependency Rule**: Dependencies always point inward (domain ← application ← infrastructure/presentation)
+2. **Interface Segregation**: Define clear, focused interfaces
+3. **Dependency Inversion**: High-level modules depend on abstractions, not implementations
+4. **Single Responsibility**: Each component has one reason to change
+5. **Module Independence**: Modules communicate through well-defined APIs
+
+## Reference Examples
+
+- [Domain Example](mdc:src/modules/events/domain/entities/Event.ts) - Event entity
+- [Application Example](mdc:src/modules/regions/application/services/RegionService.ts) - Region service
+- [Infrastructure Example](mdc:src/modules/events/infrastructure/repositories/EventRepository.ts) - Event repository
+- [Module Factory Example](mdc:src/modules/regions/RegionsModule.ts) - Regions module factory
+- [Presentation Example](mdc:src/presentation/pages/regions/RegionPrompt.tsx) - Region prompt component

@@ -1,0 +1,377 @@
+---
+description: This rule helps organize React components using the Atomic Design methodology (atoms, molecules, organisms, templates, pages). It provides a structured approach to building UI components with clear hierarchy and reusability patterns, including guidelines for component placement, registry system, and best practices for maintaining a consistent design system.
+globs: 
+alwaysApply: false
+---
+# Atomic Design Architecture
+
+Atomic Design is a methodology for creating design systems by breaking down components into five distinct levels: atoms, molecules, organisms, templates, and pages. This architecture is used in the presentation layer of the application.
+
+## Principles
+
+1. **Hierarchical Composition**: Components build upon each other from simple to complex
+2. **Reusability**: Lower-level components are highly reusable
+3. **Consistency**: Enforces design and interaction consistency across the application
+4. **Modularity**: Each component is self-contained with clear inputs and outputs
+5. **Progressive Enhancement**: Start small and build up to complete interfaces
+
+## Directory Structure
+
+The atomic design structure distinguishes between common (shared) components and feature-specific components:
+
+```
+src/presentation/
+├── atoms/
+│   ├── common/                     - Shared across all features
+│   │   └── <ComponentName>/
+│   │       ├── <ComponentName>.tsx
+│   │       └── index.ts
+│   └── <module-name>/              - Module-specific atoms
+│       └── <feature-name>/         - Feature-specific atoms
+│           └── <ComponentName>/
+│               ├── <ComponentName>.tsx
+│               └── index.ts
+├── molecules/
+│   ├── common/                     - Shared across all features
+│   └── <module-name>/              - Module-specific molecules
+│       └── <feature-name>/         - Feature-specific molecules
+├── organisms/
+│   ├── common/                     - Shared across all features
+│   └── <module-name>/              - Module-specific organisms
+│       └── <feature-name>/         - Feature-specific organisms
+├── templates/
+│   ├── common/                     - Shared across all features
+│   └── <module-name>/              - Module-specific templates
+│       └── <feature-name>/         - Feature-specific templates
+└── pages/
+    └── <module-name>/              - Module-specific pages
+        └── <feature-name>/         - Feature-specific pages
+└── registry/                       - Component registry system
+    ├── index.ts                    - Main registry exports
+    ├── atoms.registry.ts           - Registry of all atom components
+    ├── molecules.registry.ts       - Registry of all molecule components
+    ├── organisms.registry.ts       - Registry of all organism components
+    ├── templates.registry.ts       - Registry of all template components
+    └── pages.registry.ts           - Registry of all page components
+```
+
+### Component Placement Guidelines
+
+1. **Common Components**: Place truly reusable components that are used across multiple modules in the `common/` directory
+2. **Module-Specific Components**: Components that belong to a specific module should be placed in `<module-name>/` directories
+3. **Feature-Specific Components**: Components that are specific to a feature within a module should be in `<module-name>/<feature-name>/` directories
+
+## Component Registry System
+
+To maintain organization and facilitate discovery (especially with AI assistance), all components are registered in a central registry:
+
+```
+src/presentation/registry/
+├── index.ts            - Main registry export
+├── atoms.registry.ts   - Registry of all atom components
+├── molecules.registry.ts
+├── organisms.registry.ts
+├── templates.registry.ts
+└── pages.registry.ts
+```
+
+The registry catalogs components by module and feature, making them discoverable and preventing duplication. See the [Component Registry](mdc:.cursor/rules/component-registry.mdc) guidelines for details.
+
+### Example Registry Implementation
+
+```typescript
+// src/presentation/registry/atoms.registry.ts
+import { Button } from '../atoms/common/Button/Button';
+import { RadioInput } from '../atoms/regions/selection/RadioInput/RadioInput';
+
+// Common components
+export const CommonAtoms = {
+  Button,
+  // ...other common atoms
+};
+
+// Module-specific components
+export const RegionsAtoms = {
+  selection: {
+    RadioInput,
+    // ...other selection atoms
+  },
+  details: {
+    Badge,
+    // ...other details atoms
+  }
+};
+
+// Main export
+export const Atoms = {
+  common: CommonAtoms,
+  regions: RegionsAtoms,
+  // other modules...
+};
+```
+
+## Example Structure
+
+For a "regions" module with "selection" and "details" features:
+
+```
+src/presentation/
+├── atoms/
+│   ├── common/
+│   │   └── Button/
+│   └── regions/                   - Regions module atoms
+│       ├── selection/             - Region selection feature
+│       │   └── RadioInput/
+│       └── details/               - Region details feature
+│           └── Badge/
+├── molecules/
+│   ├── common/
+│   │   └── Header/
+│   └── regions/
+│       ├── selection/
+│       │   └── RegionList/
+│       └── details/
+│           └── RegionStats/
+```
+
+## Component Levels
+
+### 1. Atoms
+
+The basic building blocks of the interface, such as buttons, inputs, labels, and icons. They are:
+- The smallest functional UI elements
+- Rarely useful on their own
+- Highly reusable across the application
+- Should be designed for versatility
+
+```tsx
+// src/presentation/atoms/common/Button/Button.tsx
+export function Button({ onClick, disabled, children, className = '' }: ButtonProps) {
+  return (
+    <button
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+      type="button"
+    >
+      {children}
+    </button>
+  );
+}
+
+// src/presentation/atoms/regions/selection/RadioInput/RadioInput.tsx
+export function RadioInput({ id, name, checked, onChange, label }: RadioInputProps) {
+  return (
+    <div className="py-2 flex items-center">
+      <input
+        type="radio"
+        id={id}
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        className="mr-2"
+      />
+      <label htmlFor={id} className="cursor-pointer">
+        {label}
+      </label>
+    </div>
+  );
+}
+```
+
+### 2. Molecules
+
+Simple groups of UI elements functioning together as a unit. Molecules are:
+- Combinations of atoms bound together
+- Relatively simple functional units
+- Focused on doing one thing well
+- Reusable in different contexts
+
+```tsx
+// src/presentation/molecules/regions/selection/RegionList/RegionList.tsx
+import { RadioInput } from '@/presentation/atoms/regions/selection/RadioInput/RadioInput';
+
+export function RegionList({ regions, selectedId, onSelect }: RegionListProps) {
+  return (
+    <div className="max-h-60 overflow-y-auto my-4">
+      {regions.map((region) => (
+        <RadioInput
+          key={region.id}
+          id={region.id}
+          name="region"
+          checked={selectedId === region.id}
+          onChange={() => onSelect(region.id)}
+          label={region.name}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+### 3. Organisms
+
+Complex UI components composed of molecules and atoms. Organisms:
+- Form distinct sections of an interface
+- Represent complex pieces of functionality
+- May contain component-specific business logic
+- Are more context-specific than molecules
+
+```tsx
+// src/presentation/organisms/regions/selection/RegionSelectionForm/RegionSelectionForm.tsx
+import { RegionList } from '@/presentation/molecules/regions/selection/RegionList/RegionList';
+import { ModalFooter } from '@/presentation/molecules/common/ModalFooter/ModalFooter';
+import { LoadingSpinner } from '@/presentation/atoms/common/LoadingSpinner/LoadingSpinner';
+import { ErrorMessage } from '@/presentation/atoms/common/ErrorMessage/ErrorMessage';
+
+export function RegionSelectionForm({
+  regions,
+  isLoading,
+  error,
+  onSubmit,
+}: RegionSelectionFormProps) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  
+  // Component implementation...
+  
+  return (
+    <>
+      <RegionList
+        regions={regions}
+        selectedId={selectedId}
+        onSelect={handleRegionSelect}
+      />
+      <ModalFooter
+        onConfirm={handleSubmit}
+        confirmDisabled={!selectedId}
+        confirmLabel="Confirm Selection"
+      />
+    </>
+  );
+}
+```
+
+### 4. Templates
+
+Page-level structures that arrange organisms, molecules, and atoms into a layout. Templates:
+- Define the layout structure of a page
+- Focus on content structure, not the content itself
+- Can be reused across similar pages
+- Often contain placeholders for dynamic content
+
+```tsx
+// src/presentation/templates/regions/selection/RegionSelectionModal/RegionSelectionModal.tsx
+import { Modal } from '@/presentation/organisms/common/Modal/Modal';
+import { ModalHeader } from '@/presentation/molecules/common/ModalHeader/ModalHeader';
+import { RegionSelectionForm } from '@/presentation/organisms/regions/selection/RegionSelectionForm/RegionSelectionForm';
+import { useRegionSelection } from '@/modules/regions/application/hooks/useRegionSelection';
+
+export function RegionSelectionModal({
+  isOpen,
+  onClose,
+}: RegionSelectionModalProps) {
+  const { regions, hasSelectedRegion, isLoading, error, selectRegion } = useRegionSelection();
+  
+  // Template logic...
+  
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalHeader title="Select Your Region" onClose={onClose} />
+      <RegionSelectionForm
+        regions={regions}
+        isLoading={isLoading}
+        error={error}
+        onSubmit={handleSubmit}
+      />
+    </Modal>
+  );
+}
+```
+
+### 5. Pages
+
+Specific instances of templates that present real content to users. Pages:
+- Represent specific use cases of the application
+- Connect to application data and state
+- Handle page-level interactions and flows
+- Are the final result of the atomic design process
+
+```tsx
+// src/presentation/pages/regions/selection/RegionPrompt.tsx
+import { RegionSelectionModal } from '@/presentation/templates/regions/selection/RegionSelectionModal/RegionSelectionModal';
+import { useRegionPrompt } from '@/modules/regions/application/hooks/useRegionPrompt';
+
+export function RegionPrompt() {
+  const { showPrompt, closePrompt } = useRegionPrompt();
+
+  return <RegionSelectionModal isOpen={showPrompt} onClose={closePrompt} />;
+}
+```
+
+## Export Pattern
+
+Use barrel exports to simplify imports for specific modules or features:
+
+```typescript
+// src/presentation/regions.ts
+// Region-specific exports organized by feature
+
+// Selection feature
+export * from './atoms/regions/selection/RadioInput/RadioInput';
+export * from './molecules/regions/selection/RegionList/RegionList';
+export * from './organisms/regions/selection/RegionSelectionForm/RegionSelectionForm';
+export * from './templates/regions/selection/RegionSelectionModal/RegionSelectionModal';
+export * from './pages/regions/selection/RegionPrompt';
+
+// Details feature
+export * from './atoms/regions/details/Badge/Badge';
+export * from './molecules/regions/details/RegionStats/RegionStats';
+// ... other components
+```
+
+## Component Pattern
+
+Each component should follow a consistent pattern:
+
+1. **Single Responsibility**: Each component should do one thing well
+2. **Props Interface**: Clearly define prop interfaces at the top
+3. **Functional Components**: Use functional components with hooks
+4. **Default Exports**: Avoid default exports to ensure consistent naming
+5. **Component Directory**: Each component should have its own directory
+6. **Barrel Files**: Use index.ts barrel files for clean exports
+
+## Using the Component Registry
+
+When developing with AI assistance, use the component registry to find existing components:
+
+```typescript
+// Example of using the registry to find components
+import { ComponentRegistry } from '@/presentation/registry';
+
+// Get a common button
+const Button = ComponentRegistry.atoms.common.Button;
+
+// Get a module-specific component
+const RadioInput = ComponentRegistry.atoms.regions.selection.RadioInput;
+
+// Using helper functions
+import { getCommonAtom, getModuleAtom } from '@/presentation/registry';
+
+const Button = getCommonAtom('Button');
+const RadioInput = getModuleAtom('regions', 'selection', 'RadioInput');
+```
+
+## Best Practices
+
+1. **Component Focus**: Keep components small and focused
+2. **Separation of Concerns**: Separate UI rendering from business logic
+3. **Prop Typing**: Use TypeScript interfaces for all component props
+4. **State Management**: Keep state at the appropriate level
+5. **Progressive Disclosure**: Hide complexity until needed
+6. **Consistent Patterns**: Use consistent naming and patterns
+7. **Component Documentation**: Document component purpose and usage
+8. **Accessibility**: Build accessibility into atoms and molecules
+9. **Responsive Design**: Design components to work across all screen sizes
+10. **Thoughtful Organization**: Carefully consider where each component belongs in the hierarchy
+11. **Registry Usage**: Always register new components in the appropriate registry file
+12. **Component Discovery**: Use the registry to discover and reuse existing components
