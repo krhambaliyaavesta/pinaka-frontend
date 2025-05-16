@@ -9,6 +9,7 @@ import {
   CommonOrganisms,
   getCommonOrganism,
 } from "./organisms.registry";
+import { Templates, CommonTemplates } from "./templates.registry";
 
 /**
  * Main component registry for the application
@@ -18,7 +19,17 @@ export const ComponentRegistry = {
   atoms: Atoms,
   molecules: Molecules,
   organisms: Organisms,
+  templates: Templates,
 };
+
+/**
+ * Helper function to get a common template component
+ */
+export function getCommonTemplate<K extends keyof typeof CommonTemplates>(
+  name: K
+) {
+  return CommonTemplates[name];
+}
 
 export {
   // Atoms
@@ -35,4 +46,8 @@ export {
   Organisms,
   CommonOrganisms,
   getCommonOrganism,
+
+  // Templates
+  Templates,
+  CommonTemplates,
 };
