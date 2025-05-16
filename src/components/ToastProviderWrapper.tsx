@@ -14,18 +14,12 @@ function ToastAdapter() {
   const toastService = useToastService();
 
   useEffect(() => {
-    console.log("Initializing SonnerAdapter in ToastProviderWrapper");
-
     // Access the presenter through the service
     const presenter = (toastService as unknown as { presenter: ToastPresenter })
       .presenter;
 
     // Create and initialize the adapter
     new SonnerAdapter(presenter, 5000);
-
-    return () => {
-      console.log("Cleaning up SonnerAdapter");
-    };
   }, [toastService]);
 
   return null;
