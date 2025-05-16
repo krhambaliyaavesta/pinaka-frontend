@@ -1,5 +1,5 @@
 /**
- * Custom error class for toast-related errors
+ * Base error class for toast-related errors
  */
 export class ToastError extends Error {
   /**
@@ -9,6 +9,8 @@ export class ToastError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ToastError";
+    // This is needed to make instanceof work correctly in TypeScript
+    Object.setPrototypeOf(this, ToastError.prototype);
   }
 
   /**
@@ -33,5 +35,27 @@ export class ToastError extends Error {
    */
   static invalidPosition(position: string): ToastError {
     return new ToastError(`Invalid toast position: ${position}`);
+  }
+}
+
+/**
+ * Error thrown when a toast with a specific ID is not found
+ */
+export class ToastNotFoundError extends ToastError {
+  constructor(id: string) {
+    super(`Toast with ID ${id} not found`);
+    this.name = "ToastNotFoundError";
+    Object.setPrototypeOf(this, ToastNotFoundError.prototype);
+  }
+}
+
+/**
+ * Error thrown when there is an issue with toast configuration
+ */
+export class InvalidToastConfigError extends ToastError {
+  constructor(message: string) {
+    super(`Invalid toast configuration: ${message}`);
+    this.name = "InvalidToastConfigError";
+    Object.setPrototypeOf(this, InvalidToastConfigError.prototype);
   }
 }

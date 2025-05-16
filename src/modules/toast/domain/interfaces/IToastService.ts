@@ -1,74 +1,77 @@
-import { ToastType } from "../enums/ToastType";
-import { IToast, ToastOptions } from "./IToast";
+import { IToast } from "./IToast";
 
 /**
- * Interface for toast service
- * Defines methods for creating and managing toast notifications
+ * Interface defining the contract for toast service operations
  */
 export interface IToastService {
   /**
-   * Show a toast notification with specified message, type, and options
-   * @param message The message content
-   * @param type The toast type (success, error, warning, info)
-   * @param options Additional configuration options
+   * Shows a toast notification
+   * @param toast The toast configuration
    * @returns The ID of the created toast
    */
-  show(message: string, type: ToastType, options?: ToastOptions): string;
+  show(toast: Omit<IToast, "id">): string;
 
   /**
-   * Show a success toast
-   * @param message The success message
-   * @param options Additional configuration options
+   * Shorthand method to show a success toast
+   * @param message The message to display
+   * @param options Additional toast options
    * @returns The ID of the created toast
    */
-  showSuccess(message: string, options?: ToastOptions): string;
+  success(
+    message: string,
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
+  ): string;
 
   /**
-   * Show an error toast
-   * @param message The error message
-   * @param options Additional configuration options
+   * Shorthand method to show an error toast
+   * @param message The message to display
+   * @param options Additional toast options
    * @returns The ID of the created toast
    */
-  showError(message: string, options?: ToastOptions): string;
+  error(
+    message: string,
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
+  ): string;
 
   /**
-   * Show a warning toast
-   * @param message The warning message
-   * @param options Additional configuration options
+   * Shorthand method to show a warning toast
+   * @param message The message to display
+   * @param options Additional toast options
    * @returns The ID of the created toast
    */
-  showWarning(message: string, options?: ToastOptions): string;
+  warning(
+    message: string,
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
+  ): string;
 
   /**
-   * Show an info toast
-   * @param message The info message
-   * @param options Additional configuration options
+   * Shorthand method to show an info toast
+   * @param message The message to display
+   * @param options Additional toast options
    * @returns The ID of the created toast
    */
-  showInfo(message: string, options?: ToastOptions): string;
+  info(
+    message: string,
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
+  ): string;
 
   /**
-   * Dismiss a specific toast by ID
+   * Updates an existing toast notification
+   * @param id The ID of the toast to update
+   * @param updates The properties to update
+   * @returns true if the toast was found and updated, false otherwise
+   */
+  update(id: string, updates: Partial<Omit<IToast, "id">>): boolean;
+
+  /**
+   * Dismisses a specific toast
    * @param id The ID of the toast to dismiss
-   * @returns Whether the toast was successfully dismissed
+   * @returns true if the toast was found and dismissed, false otherwise
    */
   dismiss(id: string): boolean;
 
   /**
-   * Dismiss all currently active toasts
+   * Dismisses all currently displayed toasts
    */
   dismissAll(): void;
-
-  /**
-   * Get all active toasts
-   * @returns Array of active toast notifications
-   */
-  getAll(): IToast[];
-
-  /**
-   * Get a specific toast by ID
-   * @param id The ID of the toast to retrieve
-   * @returns The toast if found, or undefined
-   */
-  getById(id: string): IToast | undefined;
 }

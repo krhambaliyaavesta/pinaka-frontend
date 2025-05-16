@@ -1,158 +1,101 @@
+import { v4 as uuidv4 } from "uuid";
 import { ToastType } from "../enums/ToastType";
-import { IToast, ToastPosition } from "../interfaces/IToast";
+import { IToast } from "../interfaces/IToast";
 
 /**
- * Implementation of the Toast entity
- * Represents a toast notification in the system
+ * Core Toast entity representing a toast notification
  */
 export class Toast implements IToast {
-  /**
-   * Unique identifier for the toast
-   */
   public readonly id: string;
-
-  /**
-   * The message content of the toast
-   */
   public readonly message: string;
-
-  /**
-   * Type of toast that determines appearance and icon
-   */
   public readonly type: ToastType;
+  public readonly duration?: number;
+  public readonly title?: string;
+  public readonly dismissible?: boolean;
+  public readonly action?: {
+    label: string;
+    onClick: () => void;
+  };
 
   /**
-   * Duration in milliseconds the toast should be displayed
+   * Creates a new Toast entity
+   * @param props Properties for the toast except id which will be generated
    */
-  public readonly duration: number;
-
-  /**
-   * Position where the toast should appear
-   */
-  public readonly position: ToastPosition;
-
-  /**
-   * Whether the toast can be dismissed by clicking
-   */
-  public readonly dismissible: boolean;
-
-  /**
-   * Timestamp when the toast was created
-   */
-  public readonly createdAt: Date;
-
-  /**
-   * Optional custom styling for the toast
-   */
-  public readonly className?: string;
-
-  /**
-   * Create a new Toast instance
-   */
-  constructor(
-    id: string,
-    message: string,
-    type: ToastType,
-    duration: number = 5000,
-    position: ToastPosition = "top-right",
-    dismissible: boolean = true,
-    className?: string
-  ) {
-    this.id = id;
-    this.message = message;
-    this.type = type;
-    this.duration = duration;
-    this.position = position;
-    this.dismissible = dismissible;
-    this.createdAt = new Date();
-    this.className = className;
+  constructor(props: Omit<IToast, "id">) {
+    this.id = uuidv4();
+    this.message = props.message;
+    this.type = props.type;
+    this.duration = props.duration;
+    this.title = props.title;
+    this.dismissible = props.dismissible ?? true;
+    this.action = props.action;
   }
 
   /**
-   * Create a success toast
+   * Creates a success toast
+   * @param message The success message
+   * @param options Additional options
+   * @returns A new Toast entity
    */
-  static createSuccess(
-    id: string,
+  static success(
     message: string,
-    duration?: number,
-    position?: ToastPosition,
-    dismissible?: boolean,
-    className?: string
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
   ): Toast {
-    return new Toast(
-      id,
+    return new Toast({
       message,
-      ToastType.SUCCESS,
-      duration,
-      position,
-      dismissible,
-      className
-    );
+      type: ToastType.SUCCESS,
+      ...options,
+    });
   }
 
   /**
-   * Create an error toast
+   * Creates an error toast
+   * @param message The error message
+   * @param options Additional options
+   * @returns A new Toast entity
    */
-  static createError(
-    id: string,
+  static error(
     message: string,
-    duration?: number,
-    position?: ToastPosition,
-    dismissible?: boolean,
-    className?: string
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
   ): Toast {
-    return new Toast(
-      id,
+    return new Toast({
       message,
-      ToastType.ERROR,
-      duration,
-      position,
-      dismissible,
-      className
-    );
+      type: ToastType.ERROR,
+      ...options,
+    });
   }
 
   /**
-   * Create a warning toast
+   * Creates a warning toast
+   * @param message The warning message
+   * @param options Additional options
+   * @returns A new Toast entity
    */
-  static createWarning(
-    id: string,
+  static warning(
     message: string,
-    duration?: number,
-    position?: ToastPosition,
-    dismissible?: boolean,
-    className?: string
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
   ): Toast {
-    return new Toast(
-      id,
+    return new Toast({
       message,
-      ToastType.WARNING,
-      duration,
-      position,
-      dismissible,
-      className
-    );
+      type: ToastType.WARNING,
+      ...options,
+    });
   }
 
   /**
-   * Create an info toast
+   * Creates an info toast
+   * @param message The info message
+   * @param options Additional options
+   * @returns A new Toast entity
    */
-  static createInfo(
-    id: string,
+  static info(
     message: string,
-    duration?: number,
-    position?: ToastPosition,
-    dismissible?: boolean,
-    className?: string
+    options?: Partial<Omit<IToast, "id" | "message" | "type">>
   ): Toast {
-    return new Toast(
-      id,
+    return new Toast({
       message,
-      ToastType.INFO,
-      duration,
-      position,
-      dismissible,
-      className
-    );
+      type: ToastType.INFO,
+      ...options,
+    });
   }
 }

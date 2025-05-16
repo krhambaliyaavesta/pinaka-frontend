@@ -1,43 +1,46 @@
 import { ToastType } from "../../domain/enums/ToastType";
-import { ToastPosition } from "../../domain/interfaces/IToast";
 
 /**
- * Data Transfer Object for updating a toast notification
- * Contains the data that can be updated for an existing toast
+ * Data Transfer Object for updating existing toast notifications
  */
 export interface UpdateToastDto {
   /**
-   * The ID of the toast to update
-   */
-  id: string;
-
-  /**
-   * The updated message content of the toast
+   * Updated message content (optional)
    */
   message?: string;
 
   /**
-   * Updated toast type
+   * Updated toast type (optional)
    */
   type?: ToastType;
 
   /**
-   * Updated duration in milliseconds
+   * Updated duration in milliseconds (optional)
    */
   duration?: number;
 
   /**
-   * Updated position
+   * Updated title (optional)
    */
-  position?: ToastPosition;
+  title?: string;
 
   /**
-   * Updated dismissible state
+   * Updated dismissible flag (optional)
    */
   dismissible?: boolean;
 
   /**
-   * Updated custom styling
+   * Updated action configuration (optional)
    */
-  className?: string;
+  action?: {
+    /**
+     * Label for the action button
+     */
+    label: string;
+
+    /**
+     * Callback function when the action button is clicked
+     */
+    onClick: () => void;
+  } | null; // Allow null to remove an action
 }
