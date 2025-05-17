@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { Toaster as ShadcnToaster } from "sonner";
-import { ToastPosition } from "../../../../modules/toast/domain/interfaces/IToast";
+import { ToastPosition } from "@/modules/toast/domain/interfaces/IToast";
 import { useToastService } from "@/modules/toast";
 import { SonnerAdapter } from "@/modules/toast/infrastructure/adapters/SonnerAdapter";
 import { ToastPresenter } from "@/modules/toast/infrastructure/presenters/ToastPresenter";

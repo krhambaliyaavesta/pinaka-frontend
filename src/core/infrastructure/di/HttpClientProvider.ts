@@ -1,6 +1,6 @@
-import { AxiosHttpClient, AxiosInterceptors } from "../http/AxiosHttpClient";
-import { HttpClient } from "../http/HttpClient";
-import { ErrorInterceptor } from "../http/interceptors/ErrorInterceptor";
+import { AxiosHttpClient, AxiosInterceptors } from "@/core/infrastructure/http/AxiosHttpClient";
+import { HttpClient } from "@/core/infrastructure/http/HttpClient";
+import { ErrorInterceptor } from "@/core/infrastructure/http/interceptors/ErrorInterceptor";
 
 /**
  * Factory for creating and configuring HTTP clients

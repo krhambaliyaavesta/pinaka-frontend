@@ -20,6 +20,16 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Code Style
+
+### Import Rules
+
+This project follows specific import path rules:
+- Use `@/` for imports outside the current directory (instead of `../`)
+- Use `./` for imports within the same directory
+
+For detailed information, see the [Import Path Rules documentation](./docs/import-rules.md).
+
 ## Documentation
 
 Project documentation is available in the [docs](./docs/index.md) directory. The documentation includes:
@@ -27,6 +37,7 @@ Project documentation is available in the [docs](./docs/index.md) directory. The
 - Architecture documentation
 - Authentication implementation
 - Development guides
+- [Import Path Rules](./docs/import-rules.md)
 
 ## Learn More
 

@@ -1,4 +1,4 @@
-import { IToast } from "../../domain/interfaces/IToast";
+import { IToast } from "@/modules/toast/domain/interfaces/IToast";
 
 /**
  * Repository for managing toast state

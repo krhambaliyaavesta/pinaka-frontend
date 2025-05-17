@@ -1,4 +1,4 @@
-import { ToastWithAction } from "../molecules/common/ToastWithAction/ToastWithAction";
+import { ToastWithAction } from "@/presentation/molecules/common/ToastWithAction/ToastWithAction";
 
 /**
  * Common molecular components available throughout the application
