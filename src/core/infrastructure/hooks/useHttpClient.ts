@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { HttpClientProvider } from "../di/HttpClientProvider";
-import { HttpClient } from "../http/HttpClient";
+import { HttpClientProvider } from "@/core/infrastructure/di/HttpClientProvider";
+import { HttpClient } from "@/core/infrastructure/http/HttpClient";
 
 /**
  * Configuration options for HTTP client
@@ -26,7 +26,7 @@ export function useHttpClient(
 
   const client = useMemo(() => {
     return provider.getClient(baseURL, options);
-  }, [provider, baseURL, options.enableErrorHandling]);
+  }, [provider, baseURL, options]);
 
   return client;
 }

@@ -1,4 +1,4 @@
-import { ToastProviderWrapper } from "../templates/common/ToastProviderWrapper";
+import { ToastProviderWrapper } from "@/presentation/templates/common/ToastProviderWrapper";
 
 /**
  * Common template components used across the application

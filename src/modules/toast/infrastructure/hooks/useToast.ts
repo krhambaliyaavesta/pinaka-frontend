@@ -1,4 +1,4 @@
-import { useToast as useProviderToast } from "../providers/ToastProvider";
+import { useToast as useProviderToast } from "@/modules/toast/infrastructure/providers/ToastProvider";
 
 /**
  * Hook to access toast functionality in components

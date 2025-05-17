@@ -1,4 +1,4 @@
-import { ToastType } from "../enums/ToastType";
+import { ToastType } from "@/modules/toast/domain/enums/ToastType";
 
 /**
  * Position options for toast notifications

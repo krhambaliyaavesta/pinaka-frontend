@@ -7,11 +7,11 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import { IToast } from "../../domain/interfaces/IToast";
-import { IToastService } from "../../domain/interfaces/IToastService";
-import { ToastService } from "../../application/services/ToastService";
-import { ToastPresenter } from "../presenters/ToastPresenter";
-import { ToastRepository } from "../repositories/ToastRepository";
+import { IToast } from "@/modules/toast/domain/interfaces/IToast";
+import { IToastService } from "@/modules/toast/domain/interfaces/IToastService";
+import { ToastService } from "@/modules/toast/application/services/ToastService";
+import { ToastPresenter } from "@/modules/toast/infrastructure/presenters/ToastPresenter";
+import { ToastRepository } from "@/modules/toast/infrastructure/repositories/ToastRepository";
 
 /**
  * Context for the toast service

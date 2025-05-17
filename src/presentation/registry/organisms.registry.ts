@@ -1,4 +1,4 @@
-import { Toaster } from "../organisms/common/ToastContainer/ToastContainer";
+import { Toaster } from "@/presentation/organisms/common/ToastContainer/ToastContainer";
 
 /**
  * Common organism components available throughout the application

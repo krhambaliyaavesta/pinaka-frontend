@@ -1,4 +1,4 @@
-import { ToastType } from "../../domain/enums/ToastType";
+import { ToastType } from "@/modules/toast/domain/enums/ToastType";
 
 /**
  * Data Transfer Object for updating existing toast notifications
