@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@/modules/auth";
+import { UserRole } from "@/modules/auth/domain/enums";
 import Link from "next/link";
 import { FaUsers, FaUserFriends } from "react-icons/fa";
-import { UserRole } from "@/modules/auth/domain/enums";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -14,15 +14,22 @@ export default function DashboardPage() {
   // Get role title
   const roleTitle = user?.role === UserRole.ADMIN ? "Admin" : "Lead";
 
+  // Determine if user is admin
+  const isAdmin = user?.role === UserRole.ADMIN;
+
+  // Set role-specific text
+  const roleText = isAdmin ? "Admin" : "Lead";
+
   return (
     <div className="space-y-4 pl-0">
       <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
         <h1 className="text-xl font-bold text-teal-800 mb-1">
           Welcome, {userName}!
         </h1>
-        <p className="text-teal-700 text-sm">
-          This is your {roleTitle.toLowerCase()} dashboard where you can manage teams, user approvals, and
-          other administrative features.
+        <p className="text-teal-700">
+          This is your {roleText} dashboard where you can manage user approvals
+          {isAdmin && ", assign roles"} and access other administrative
+          features.
         </p>
       </div>
 
@@ -39,8 +46,9 @@ export default function DashboardPage() {
               <h2 className="text-lg font-semibold text-gray-900 mb-1">
                 User Approval
               </h2>
-              <p className="text-gray-600 text-sm">
-                Review and manage pending user registrations
+              <p className="text-gray-600">
+                Review{isAdmin && ", assign roles,"} and manage pending user
+                registrations
               </p>
             </div>
           </div>

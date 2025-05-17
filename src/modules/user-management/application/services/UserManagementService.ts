@@ -1,5 +1,5 @@
 import { User } from "@/modules/auth/domain/entities/User";
-import { UserStatus } from "@/modules/auth/domain/enums";
+import { UserRole, UserStatus } from "@/modules/auth/domain/enums";
 import {
   IUserManagementRepository,
   IUserManagementService,
@@ -55,6 +55,24 @@ export class UserManagementService implements IUserManagementService {
       );
     } catch (error) {
       console.error("UserManagementService: Reject user error", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Approves a pending user and assigns them a specific role
+   * @param userId The ID of the user to approve
+   * @param role The role to assign to the user
+   * @returns Promise resolving to the updated User
+   */
+  async approveUserWithRole(userId: string, role: UserRole): Promise<User> {
+    try {
+      return await this.repository.approveUserWithRole(userId, role);
+    } catch (error) {
+      console.error(
+        "UserManagementService: Approve user with role error",
+        error
+      );
       throw error;
     }
   }

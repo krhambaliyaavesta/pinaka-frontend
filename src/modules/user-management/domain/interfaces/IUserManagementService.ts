@@ -1,4 +1,5 @@
 import { User } from "@/modules/auth/domain/entities/User";
+import { UserRole } from "@/modules/auth/domain/enums";
 
 /**
  * Service interface for user management operations
@@ -24,4 +25,12 @@ export interface IUserManagementService {
    * @returns Promise resolving to the updated user
    */
   rejectUser(userId: string): Promise<User>;
+
+  /**
+   * Approves a pending user with a specific role
+   * @param userId The ID of the user to approve
+   * @param role The role to assign to the user
+   * @returns Promise resolving to the updated user
+   */
+  approveUserWithRole(userId: string, role: UserRole): Promise<User>;
 }

@@ -30,7 +30,6 @@ export function usePendingUsers() {
       }
 
       setPendingUsers(users);
-      console.log("Set pending users state:", users.length, "users");
     } catch (err) {
       console.error("Error fetching pending users:", err);
       setError(
