@@ -2,12 +2,14 @@ import { Toast } from "@/presentation/atoms/common/Toast/Toast";
 import { RoleOption } from "@/presentation/atoms/user-management/RoleOption";
 import { ActionButton } from "@/presentation/atoms/user-management/ActionButton";
 import { ApprovalBadge } from "@/presentation/atoms/user-management/ApprovalBadge";
+import { CelebrationCard } from "@/presentation/atoms/CelebrationCard/CelebrationCard";
 
 /**
  * Common atomic components available throughout the application
  */
 export const CommonAtoms = {
   Toast,
+  CelebrationCard,
   // Other common atoms will be added here
 };
 

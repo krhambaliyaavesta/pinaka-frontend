@@ -4,6 +4,7 @@ import { Button } from "@/presentation/atoms/auth/Button/Button";
 import { useRouter } from "next/navigation";
 import { useLogout } from "@/modules/auth";
 import { useToast } from "@/modules/toast";
+import { HiClock } from "react-icons/hi";
 
 export default function WaitingApprovalPage() {
   const router = useRouter();
@@ -21,30 +22,41 @@ export default function WaitingApprovalPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-md">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md overflow-hidden rounded-xl bg-white p-8 shadow-lg">
+        {/* Illustration */}
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center justify-center h-24 w-24 rounded-full bg-teal-50 shadow-inner">
+            <HiClock className="h-14 w-14 text-teal-500 animate-pulse" />
+          </div>
+        </div>
+        
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Account Pending Approval
           </h2>
-          <p className="mt-2 text-gray-600">
-            Your account is currently pending approval from an administrator.
-            You will be notified when your account is approved.
+          <p className="mt-3 text-gray-600">
+            Your account is currently under review. You'll be notified via email when it's approved.
           </p>
         </div>
 
-        <div className="mt-8 flex flex-col items-center">
-          <div className="bg-yellow-100 p-4 rounded-lg w-full mb-6">
-            <p className="text-yellow-800 text-center">
-              Please check your email for updates on your account status or
-              contact your team administrator.
+        <div className="mt-8 flex flex-col">
+          <div className="bg-amber-50 p-4 rounded-lg border border-amber-100 mb-6">
+            <p className="text-amber-800 text-sm">
+              <span className="font-semibold block mb-1">What happens next?</span>
+              Our team is reviewing your application. This typically takes 1-2 business days. 
+              Please check your email for updates or contact your team administrator if you have questions.
             </p>
           </div>
+          
           <Button
             onClick={handleLogout}
-            className="bg-gray-500 hover:bg-gray-600 text-white mt-4 rounded-full w-full"
+            variant="primary"
+            size="lg"
+            fullWidth
             isLoading={isLoading}
             disabled={isLoading}
+            className="rounded-lg shadow-sm"
           >
             Log Out
           </Button>
