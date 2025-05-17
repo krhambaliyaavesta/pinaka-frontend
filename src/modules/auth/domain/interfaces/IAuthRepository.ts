@@ -5,6 +5,7 @@ export interface RegisterUserDto {
   password: string;
   firstName: string;
   lastName: string;
+  jobTitle: string;
 }
 
 export interface IAuthRepository {

@@ -6,6 +6,7 @@ export class User {
     public readonly email: string,
     public readonly firstName: string,
     public readonly lastName: string,
+    public readonly jobTitle: string | null = null,
     public readonly role: UserRole,
     public readonly status: UserStatus,
     public readonly createdAt: Date

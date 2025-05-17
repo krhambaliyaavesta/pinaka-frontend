@@ -27,7 +27,7 @@ src/modules/auth/
 
 ## Implementation Steps
 
-### 1. Domain Layer Implementation
+Update authentication documentation and enhance user roles specification
 
 #### 1.1 Create basic enums and entities
 
