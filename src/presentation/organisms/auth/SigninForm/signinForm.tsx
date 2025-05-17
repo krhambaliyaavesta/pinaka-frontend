@@ -8,6 +8,8 @@ import { MdEmail, MdLock } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSignin } from "@/modules/auth";
 import { useToast } from "@/modules/toast";
+import { useRouter } from "next/navigation";
+import { UserStatus } from "@/modules/auth/domain/enums";
 
 interface SigninFormProps {
   onSignupClick?: () => void;
@@ -22,6 +24,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
   const [showPassword, setShowPassword] = useState(false);
   const { signin, isLoading, error } = useSignin();
   const toast = useToast();
+  const router = useRouter();
 
   const {
     register,
@@ -40,7 +43,14 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
       const user = await signin(data.email, data.password);
       if (user) {
         toast.success("Signed in successfully!");
-        // Redirect or update state here as needed
+
+        // Check if user status is pending and redirect to waiting-approval page
+        if (user.status === UserStatus.PENDING) {
+          router.push("/waiting-approval");
+        } else {
+          // Default redirect for approved users
+          router.push("/dashboard");
+        }
       } else if (error) {
         toast.error(error.message || "Sign in failed");
       }
@@ -97,7 +107,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
             id="password"
             type={showPassword ? "text" : "password"}
             label="Password"
-            placeholder="Create Your Secret Handshake (Password)"
+            placeholder="Create Your Secret Handshake"
             autoComplete="current-password"
             className="pl-10 pr-10"
             {...register("password", {

@@ -153,10 +153,11 @@ export class AuthRepository implements IAuthRepository {
 
   async logout(): Promise<void> {
     try {
-      await this.httpClient.post("/api/auth/logout", {});
-
       // Remove the token from storage
       this.tokenStorage.removeToken();
+
+      // Also manually remove the cookie for extra reliability
+      this.removeAuthCookie("auth_token");
     } catch (error) {
       throw new AuthError(
         "Logout failed",
@@ -239,5 +240,18 @@ export class AuthRepository implements IAuthRepository {
     document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/${secure}${sameSite}`;
 
     console.log("AuthRepository: Manually set auth cookie", { name });
+  }
+
+  /**
+   * Manually remove an authentication cookie
+   * @param name Cookie name
+   */
+  private removeAuthCookie(name: string): void {
+    if (typeof document === "undefined") return;
+
+    // Set the cookie with an expired date to remove it
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+
+    console.log("AuthRepository: Manually removed auth cookie", { name });
   }
 }

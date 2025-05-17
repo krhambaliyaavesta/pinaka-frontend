@@ -140,7 +140,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
             id="password"
             type={showPassword ? "text" : "password"}
             label="Password"
-            placeholder="Create Your Secret Handshake (Password)"
+            placeholder="Create Your Secret Handshake"
             className="pl-10 pr-10"
             {...register("password", {
               required: "Password is required",
