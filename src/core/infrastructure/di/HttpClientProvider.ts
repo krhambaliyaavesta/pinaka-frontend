@@ -1,6 +1,12 @@
-import { AxiosHttpClient, AxiosInterceptors } from "@/core/infrastructure/http/AxiosHttpClient";
+import {
+  AxiosHttpClient,
+  AxiosInterceptors,
+} from "@/core/infrastructure/http/AxiosHttpClient";
 import { HttpClient } from "@/core/infrastructure/http/HttpClient";
 import { ErrorInterceptor } from "@/core/infrastructure/http/interceptors/ErrorInterceptor";
+import { AuthTokenInterceptor } from "@/core/infrastructure/http/interceptors/AuthTokenInterceptor";
+import { ITokenStorage } from "@/modules/auth/domain/interfaces/ITokenStorage";
+import { AuthModule } from "@/modules/auth/AuthModule";
 
 /**
  * Factory for creating and configuring HTTP clients
@@ -35,11 +41,14 @@ export class HttpClientProvider {
     baseURL: string,
     options: {
       enableErrorHandling?: boolean;
+      enableAuthToken?: boolean;
     } = {}
   ): HttpClient {
-    const { enableErrorHandling = true } = options;
+    const { enableErrorHandling = true, enableAuthToken = true } = options;
 
-    const clientKey = `${baseURL}-${enableErrorHandling ? "error" : "noerror"}`;
+    const clientKey = `${baseURL}-${
+      enableErrorHandling ? "error" : "noerror"
+    }-${enableAuthToken ? "auth" : "noauth"}`;
 
     // Return existing client if already created
     if (this.clients.has(clientKey)) {
@@ -48,6 +57,19 @@ export class HttpClientProvider {
 
     // Create interceptors
     const interceptors: AxiosInterceptors = {};
+
+    // Add auth token interceptor if enabled
+    if (enableAuthToken) {
+      // Get token storage from AuthModule
+      const tokenStorage: ITokenStorage = AuthModule.getTokenStorage();
+
+      // Create auth interceptor
+      const authInterceptor = new AuthTokenInterceptor(tokenStorage);
+
+      interceptors.request = {
+        onFulfilled: authInterceptor.onRequest,
+      };
+    }
 
     // Add error interceptor if enabled
     if (enableErrorHandling) {

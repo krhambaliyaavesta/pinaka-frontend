@@ -22,4 +22,4 @@ export {
 } from "./application/usecases";
 
 // Application hooks
-export { useSignin, useSignup, useLogout } from "./application/hooks";
+export { useSignin, useSignup, useLogout, useAuth } from "./application/hooks";

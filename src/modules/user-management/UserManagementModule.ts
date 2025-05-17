@@ -2,6 +2,13 @@ import {
   IUserManagementRepository,
   IUserManagementService,
 } from "./domain/interfaces";
+import { UserManagementRepository } from "./infrastructure/repositories";
+import {
+  UserManagementService,
+  GetPendingUsersUseCase,
+  ApproveUserUseCase,
+  RejectUserUseCase,
+} from "./application";
 
 /**
  * Factory class for the User Management module
@@ -16,8 +23,7 @@ export class UserManagementModule {
    */
   static getRepository(): IUserManagementRepository {
     if (!this.repository) {
-      // Will be implemented in the next phase
-      throw new Error("Repository not implemented yet");
+      this.repository = new UserManagementRepository();
     }
     return this.repository;
   }
@@ -27,34 +33,33 @@ export class UserManagementModule {
    */
   static getService(): IUserManagementService {
     if (!this.service) {
-      // Will be implemented in the next phase
-      throw new Error("Service not implemented yet");
+      this.service = new UserManagementService(this.getRepository());
     }
     return this.service;
   }
 
   /**
    * Create a new GetPendingUsersUseCase instance
+   * @returns A new GetPendingUsersUseCase instance
    */
-  static getGetPendingUsersUseCase() {
-    // Will be implemented in a later phase
-    throw new Error("Use case not implemented yet");
+  static getGetPendingUsersUseCase(): GetPendingUsersUseCase {
+    return new GetPendingUsersUseCase(this.getService());
   }
 
   /**
    * Create a new ApproveUserUseCase instance
+   * @returns A new ApproveUserUseCase instance
    */
-  static getApproveUserUseCase() {
-    // Will be implemented in a later phase
-    throw new Error("Use case not implemented yet");
+  static getApproveUserUseCase(): ApproveUserUseCase {
+    return new ApproveUserUseCase(this.getService());
   }
 
   /**
    * Create a new RejectUserUseCase instance
+   * @returns A new RejectUserUseCase instance
    */
-  static getRejectUserUseCase() {
-    // Will be implemented in a later phase
-    throw new Error("Use case not implemented yet");
+  static getRejectUserUseCase(): RejectUserUseCase {
+    return new RejectUserUseCase(this.getService());
   }
 
   /**

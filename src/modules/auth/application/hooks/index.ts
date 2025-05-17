@@ -1,3 +1,4 @@
-export { useSignin } from "./useSignin";
-export { useSignup } from "./useSignup";
-export { useLogout } from "./useLogout";
+export * from "./useSignin";
+export * from "./useSignup";
+export * from "./useLogout";
+export * from "./useAuth";
