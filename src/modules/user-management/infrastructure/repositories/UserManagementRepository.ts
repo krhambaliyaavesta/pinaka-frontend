@@ -55,7 +55,6 @@ export class UserManagementRepository implements IUserManagementRepository {
    */
   async getPendingUsers(): Promise<User[]> {
     try {
-      console.log("Fetching pending users...");
       const response = await this.httpClient.get<GetPendingUsersResponse>(
         "/api/admin/users/pending"
       );
@@ -69,15 +68,11 @@ export class UserManagementRepository implements IUserManagementRepository {
       const { users } = response.data;
 
       if (!Array.isArray(users)) {
-        console.error("Expected users array in response, got:", users);
         throw new Error("Invalid response format from server");
       }
 
-      console.log(`Mapping ${users.length} users from API`);
       const mappedUsers = users.map((userDTO) => {
-        console.log("Mapping user:", userDTO);
         const user = this.mapToUser(userDTO);
-        console.log("Mapped to:", user);
         return user;
       });
 
