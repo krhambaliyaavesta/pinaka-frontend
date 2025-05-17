@@ -1,13 +1,11 @@
 import { ToastType } from "../../domain/enums/ToastType";
-import { ToastPosition } from "../../domain/interfaces/IToast";
 
 /**
- * Data Transfer Object for creating a toast notification
- * Contains all the data needed to create a new toast
+ * Data Transfer Object for creating toast notifications
  */
 export interface CreateToastDto {
   /**
-   * The message content of the toast
+   * Message content of the toast
    */
   message: string;
 
@@ -17,25 +15,32 @@ export interface CreateToastDto {
   type: ToastType;
 
   /**
-   * Duration in milliseconds the toast should be displayed
-   * If not provided, a default will be used
+   * Optional duration in milliseconds
    */
   duration?: number;
 
   /**
-   * Position where the toast should appear
-   * If not provided, a default will be used
+   * Optional title for the toast
    */
-  position?: ToastPosition;
+  title?: string;
 
   /**
-   * Whether the toast can be dismissed by clicking
-   * If not provided, a default will be used
+   * Whether the toast can be dismissed manually
    */
   dismissible?: boolean;
 
   /**
-   * Optional custom styling for the toast
+   * Optional action button configuration
    */
-  className?: string;
+  action?: {
+    /**
+     * Label for the action button
+     */
+    label: string;
+
+    /**
+     * Callback function when the action button is clicked
+     */
+    onClick: () => void;
+  };
 }

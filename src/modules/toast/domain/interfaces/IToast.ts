@@ -12,7 +12,7 @@ export type ToastPosition =
   | "bottom-center";
 
 /**
- * Interface for toast notifications
+ * Interface defining the structure of a toast notification
  */
 export interface IToast {
   /**
@@ -21,40 +21,46 @@ export interface IToast {
   id: string;
 
   /**
-   * The message content of the toast
+   * Message to display in the toast
    */
   message: string;
 
   /**
-   * Type of toast that determines appearance and icon
+   * Type of toast (success, error, warning, info)
    */
   type: ToastType;
 
   /**
-   * Duration in milliseconds the toast should be displayed
-   * If set to 0, toast will remain until manually dismissed
+   * Duration in milliseconds for which the toast should be visible
+   * If undefined, the toast will use the default duration
    */
-  duration: number;
+  duration?: number;
 
   /**
-   * Position where the toast should appear
+   * Optional title for the toast
    */
-  position: ToastPosition;
+  title?: string;
 
   /**
-   * Whether the toast can be dismissed by clicking
+   * Whether the toast is dismissible manually
+   * Defaults to true
    */
-  dismissible: boolean;
+  dismissible?: boolean;
 
   /**
-   * Timestamp when the toast was created
+   * Optional action button configuration
    */
-  createdAt: Date;
+  action?: {
+    /**
+     * Label for the action button
+     */
+    label: string;
 
-  /**
-   * Optional custom styling for the toast
-   */
-  className?: string;
+    /**
+     * Callback function when the action button is clicked
+     */
+    onClick: () => void;
+  };
 }
 
 /**

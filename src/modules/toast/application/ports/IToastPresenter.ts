@@ -1,24 +1,32 @@
 import { IToast } from "../../domain/interfaces/IToast";
 
 /**
- * Interface for toast presentation
- * This is an output port that defines how toasts should be presented to the user
+ * Interface defining the contract for toast presentation (output port)
  */
 export interface IToastPresenter {
   /**
-   * Present a new toast notification to the user
+   * Presents a new toast notification
    * @param toast The toast to present
    */
   present(toast: IToast): void;
 
   /**
-   * Remove a toast from the presentation
-   * @param id The ID of the toast to remove
+   * Updates the presentation of an existing toast
+   * @param id ID of the toast to update
+   * @param updates Partial updates to apply
+   * @returns Whether the update was successful
    */
-  remove(id: string): void;
+  update(id: string, updates: Partial<Omit<IToast, "id">>): boolean;
 
   /**
-   * Remove all toasts from the presentation
+   * Removes a toast from the presentation
+   * @param id ID of the toast to remove
+   * @returns Whether the removal was successful
+   */
+  remove(id: string): boolean;
+
+  /**
+   * Removes all toasts from the presentation
    */
   removeAll(): void;
 }

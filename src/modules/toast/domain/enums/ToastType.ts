@@ -1,5 +1,5 @@
 /**
- * Enum representing different types of toast notifications
+ * Enum defining the standard toast notification types
  */
 export enum ToastType {
   /**
