@@ -26,7 +26,7 @@ export function useHttpClient(
 
   const client = useMemo(() => {
     return provider.getClient(baseURL, options);
-  }, [provider, baseURL, options.enableErrorHandling]);
+  }, [provider, baseURL, options]);
 
   return client;
 }
