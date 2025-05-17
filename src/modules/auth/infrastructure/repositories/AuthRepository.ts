@@ -27,8 +27,7 @@ interface UserDTO {
   fullName?: string; // API might provide this directly
   jobTitle?: string; // Optional, might not come from API
   role: UserRole;
-  status?: UserStatus; // Status might not be in the response
-  approvalStatus?: string; // New field from the API
+  approvalStatus?: UserStatus; // New field from the API
   createdAt?: string; // May not be in response from signin/signup
 }
 
@@ -186,8 +185,8 @@ export class AuthRepository implements IAuthRepository {
         default:
           status = UserStatus.PENDING;
       }
-    } else if (data.status !== undefined) {
-      status = data.status;
+    } else if (data.approvalStatus !== undefined) {
+      status = data.approvalStatus;
     } else {
       status = UserStatus.APPROVED; // Default fallback
     }

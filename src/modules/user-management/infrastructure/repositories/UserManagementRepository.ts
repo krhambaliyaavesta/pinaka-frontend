@@ -16,14 +16,21 @@ interface UserDTO {
   email: string;
   firstName: string;
   lastName: string;
+  fullName?: string;
   jobTitle?: string;
   role: UserRole;
-  status?: UserStatus;
-  approvalStatus?: string;
+  // status?: UserStatus;
+  approvalStatus?: UserStatus;
   createdAt: string;
 }
 
-type GetPendingUsersResponse = ApiResponse<UserDTO[]>;
+// Update response type to match actual API response structure
+interface PendingUsersResponseData {
+  users: UserDTO[];
+  total: number;
+}
+
+type GetPendingUsersResponse = ApiResponse<PendingUsersResponseData>;
 type UpdateUserStatusResponse = ApiResponse<UserDTO>;
 
 /**
@@ -48,15 +55,35 @@ export class UserManagementRepository implements IUserManagementRepository {
    */
   async getPendingUsers(): Promise<User[]> {
     try {
+      console.log("Fetching pending users...");
       const response = await this.httpClient.get<GetPendingUsersResponse>(
         "/api/admin/users/pending"
       );
 
       if (response.status !== "success" || !response.data) {
+        console.error("Invalid response:", response);
         throw new Error("Invalid response from server");
       }
 
-      return response.data.map((userDTO) => this.mapToUser(userDTO));
+      console.log("API response:", response.data);
+
+      // Extract users array from the response
+      const { users } = response.data;
+
+      if (!Array.isArray(users)) {
+        console.error("Expected users array in response, got:", users);
+        throw new Error("Invalid response format from server");
+      }
+
+      console.log(`Mapping ${users.length} users from API`);
+      const mappedUsers = users.map((userDTO) => {
+        console.log("Mapping user:", userDTO);
+        const user = this.mapToUser(userDTO);
+        console.log("Mapped to:", user);
+        return user;
+      });
+
+      return mappedUsers;
     } catch (error) {
       console.error("UserManagementRepository: Get pending users error", error);
 
@@ -71,14 +98,19 @@ export class UserManagementRepository implements IUserManagementRepository {
   /**
    * Updates a user's status through the API
    * @param userId The ID of the user to update
-   * @param status The new status to set
+   * @param approvalStatus The new status to set
    * @returns Promise resolving to the updated User
    */
-  async updateUserStatus(userId: string, status: UserStatus): Promise<User> {
+  async updateUserStatus(
+    userId: string,
+    approvalStatus: UserStatus
+  ): Promise<User> {
     try {
+      const payload = { approvalStatus };
+
       const response = await this.httpClient.put<UpdateUserStatusResponse>(
-        `/api/auth/users/${userId}`,
-        { status }
+        `/api/admin/users/${userId}`,
+        payload
       );
 
       if (response.status !== "success" || !response.data) {
@@ -107,37 +139,53 @@ export class UserManagementRepository implements IUserManagementRepository {
    */
   private mapToUser(data: UserDTO): User {
     // Map approvalStatus to UserStatus if it exists
-    let status: UserStatus;
+    let approvalStatus: UserStatus;
 
     if (data.approvalStatus) {
       // Convert approvalStatus string to UserStatus enum
       switch (data.approvalStatus.toUpperCase()) {
         case "APPROVED":
-          status = UserStatus.APPROVED;
+          approvalStatus = UserStatus.APPROVED;
           break;
         case "PENDING":
-          status = UserStatus.PENDING;
+          approvalStatus = UserStatus.PENDING;
           break;
         case "REJECTED":
-          status = UserStatus.REJECTED;
+          approvalStatus = UserStatus.REJECTED;
           break;
         default:
-          status = UserStatus.PENDING;
+          approvalStatus = UserStatus.PENDING;
       }
-    } else if (data.status !== undefined) {
-      status = data.status;
+    } else if (data.approvalStatus !== undefined) {
+      approvalStatus = data.approvalStatus;
     } else {
-      status = UserStatus.PENDING; // Default fallback
+      approvalStatus = UserStatus.PENDING; // Default fallback
+    }
+
+    // If API provides a fullName, use it to set firstName and lastName
+    let firstName = data.firstName;
+    let lastName = data.lastName;
+
+    // If API provides fullName but not firstName/lastName, extract them
+    if (data.fullName && (!firstName || !lastName)) {
+      const nameParts = data.fullName.split(" ");
+      if (nameParts.length > 1) {
+        firstName = nameParts[0];
+        lastName = nameParts.slice(1).join(" ");
+      } else {
+        firstName = data.fullName;
+        lastName = "";
+      }
     }
 
     return new User(
       data.id,
       data.email,
-      data.firstName,
-      data.lastName,
+      firstName,
+      lastName,
       data.jobTitle || null,
       data.role,
-      status,
+      approvalStatus,
       new Date(data.createdAt)
     );
   }

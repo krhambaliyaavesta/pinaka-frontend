@@ -71,7 +71,7 @@ export function UserApprovalCard({
           <h3 className="text-lg font-semibold text-gray-900">
             {user.fullName}
           </h3>
-          <ApprovalBadge status={user.status} />
+          <ApprovalBadge status={user.approvalStatus} />
         </div>
 
         <UserDetailItem label="Email" value={user.email} icon={<MdEmail />} />

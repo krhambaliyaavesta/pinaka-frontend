@@ -1,5 +1,5 @@
 export enum UserStatus {
-  APPROVED = "approved",
-  PENDING = "pending",
-  REJECTED = "rejected",
+  APPROVED = "APPROVED",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
 }

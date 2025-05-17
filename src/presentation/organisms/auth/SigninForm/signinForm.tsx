@@ -45,7 +45,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
         toast.success("Signed in successfully!");
 
         // Check if user status is pending and redirect to waiting-approval page
-        if (user.status === UserStatus.PENDING) {
+        if (user.approvalStatus === UserStatus.PENDING) {
           router.push("/waiting-approval");
         } else {
           // Default redirect for approved users

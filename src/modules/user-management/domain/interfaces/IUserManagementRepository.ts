@@ -18,5 +18,5 @@ export interface IUserManagementRepository {
    * @param status The new status to set
    * @returns Promise resolving to the updated user
    */
-  updateUserStatus(userId: string, status: UserStatus): Promise<User>;
+  updateUserStatus(userId: string, approvalStatus: UserStatus): Promise<User>;
 }

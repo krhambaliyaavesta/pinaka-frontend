@@ -8,12 +8,12 @@ export class User {
     public readonly lastName: string,
     public readonly jobTitle: string | null = null,
     public readonly role: UserRole,
-    public readonly status: UserStatus,
+    public readonly approvalStatus: UserStatus,
     public readonly createdAt: Date
   ) {}
 
   get fullName(): string {
-    return `${this.firstName} ${this.lastName}`;
+    return `${this.firstName} ${this.lastName}`.trim();
   }
 
   isAdmin(): boolean {
@@ -26,5 +26,9 @@ export class User {
 
   isMember(): boolean {
     return this.role === UserRole.MEMBER;
+  }
+
+  toString(): string {
+    return `User(id=${this.id}, name=${this.fullName}, email=${this.email}, role=${this.role}, status=${this.approvalStatus})`;
   }
 }

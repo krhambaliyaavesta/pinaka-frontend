@@ -20,9 +20,17 @@ export function usePendingUsers() {
       setError(null);
 
       const useCase = UserManagementModule.getGetPendingUsersUseCase();
+      console.log("Executing GetPendingUsersUseCase");
       const users = await useCase.execute();
+      console.log("Received users from use case:", users);
+
+      if (!Array.isArray(users)) {
+        console.error("Expected array of users, got:", users);
+        throw new Error("Invalid data format returned from the API");
+      }
 
       setPendingUsers(users);
+      console.log("Set pending users state:", users.length, "users");
     } catch (err) {
       console.error("Error fetching pending users:", err);
       setError(
