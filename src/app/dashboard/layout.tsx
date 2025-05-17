@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaUsers, FaTachometerAlt } from "react-icons/fa";
+import { FaUsers, FaTachometerAlt, FaUserFriends } from "react-icons/fa";
 import Link from "next/link";
 import { useAuth } from "@/modules/auth";
 import { UserRole } from "@/modules/auth/domain/enums";
@@ -16,18 +16,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, isLoading, error } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Handle authentication
   useEffect(() => {
-    // Don't redirect during loading
     if (isLoading) return;
 
-    // Redirect if not authenticated or not a lead
-    if (!user || user.role !== UserRole.LEAD) {
+    if (!user || (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)) {
+      console.log("User not authorized for dashboard, redirecting to login", user?.role);
       router.push("/login");
     }
   }, [isLoading, user, router]);
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#FFFDF5]">
@@ -36,21 +33,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     );
   }
 
-  // Only render content if user is a lead
-  if (!user || user.role !== UserRole.LEAD) {
+  if (!user || (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)) {
     return null;
   }
 
+  const roleTitle = user.role === UserRole.ADMIN ? "Admin" : "Lead";
+  
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
     <div className="flex min-h-screen bg-[#FFFDF5]">
-      {/* Sidebar - desktop */}
       <div className="hidden md:flex w-64 flex-col bg-white shadow-md">
         <div className="p-5 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-teal-600">Lead Dashboard</h1>
+          <h1 className="text-xl font-bold text-teal-600">{roleTitle} Dashboard</h1>
         </div>
         <nav className="flex-1 p-5 space-y-1">
           <Link
@@ -67,6 +64,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <FaUsers className="mr-3" />
             <span>User Approvals</span>
           </Link>
+          <Link
+            href="/dashboard/teams"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+          >
+            <FaUserFriends className="mr-3" />
+            <span>Teams</span>
+          </Link>
         </nav>
         <div className="p-5 border-t border-gray-200">
           <div className="flex items-center">
@@ -75,7 +79,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
             <div className="ml-3">
               <p className="text-sm font-medium">{user.fullName}</p>
-              <p className="text-xs text-gray-500">Lead</p>
+              <p className="text-xs text-gray-500">{roleTitle}</p>
             </div>
           </div>
         </div>
@@ -84,7 +88,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Mobile header */}
       <div className="md:hidden fixed top-0 inset-x-0 z-10 bg-white shadow-md p-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold text-teal-600">Lead Dashboard</h1>
+          <h1 className="text-xl font-bold text-teal-600">{roleTitle} Dashboard</h1>
           <button
             onClick={toggleMobileMenu}
             className="text-gray-600 focus:outline-none"
@@ -121,7 +125,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="bg-white h-full w-64 p-5 shadow-lg">
             <div className="flex justify-between items-center mb-5">
               <h1 className="text-xl font-bold text-teal-600">
-                Lead Dashboard
+                {roleTitle} Dashboard
               </h1>
               <button
                 onClick={toggleMobileMenu}
@@ -159,6 +163,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <FaUsers className="mr-3" />
                 <span>User Approvals</span>
               </Link>
+              <Link
+                href="/dashboard/teams"
+                className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaUserFriends className="mr-3" />
+                <span>Teams</span>
+              </Link>
             </nav>
             <div className="mt-5 pt-5 border-t border-gray-200">
               <div className="flex items-center">
@@ -167,7 +179,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium">{user.fullName}</p>
-                  <p className="text-xs text-gray-500">Lead</p>
+                  <p className="text-xs text-gray-500">{roleTitle}</p>
                 </div>
               </div>
             </div>
@@ -176,8 +188,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       )}
 
       {/* Main content */}
-      <div className="flex-1 md:ml-64 pt-4 md:pt-0">
-        <main className="px-4 py-16 md:py-6">{children}</main>
+      <div className="flex-1 md:px-6 pt-4 md:pt-0">
+        <main className="pl-0 pr-2 py-12 md:py-4">{children}</main>
       </div>
     </div>
   );

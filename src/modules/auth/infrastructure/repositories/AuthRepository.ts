@@ -167,6 +167,7 @@ export class AuthRepository implements IAuthRepository {
   }
 
   private mapToUser(data: UserDTO): User {
+    
     // Map approvalStatus to UserStatus if it exists
     let status: UserStatus;
 
@@ -191,16 +192,39 @@ export class AuthRepository implements IAuthRepository {
       status = UserStatus.APPROVED; // Default fallback
     }
 
-    return new User(
+    // Ensure role is correctly mapped to UserRole enum
+    let role: UserRole = data.role;
+    
+    // Check if we received a numeric role and map it to UserRole enum
+    if (typeof data.role === 'number') {
+      switch(data.role) {
+        case 1:
+          role = UserRole.ADMIN;
+          break;
+        case 2:
+          role = UserRole.LEAD;
+          break;
+        case 3:
+          role = UserRole.MEMBER;
+          break;
+        default:
+          console.warn("AuthRepository: Unknown role value received:", data.role);
+          role = data.role;
+      }
+    }
+
+    const user = new User(
       data.id,
       data.email,
       data.firstName,
       data.lastName,
       data.jobTitle || null, // Handle potential undefined
-      data.role,
+      role,
       status,
       new Date(data.createdAt || "")
     );
+
+    return user;
   }
 
   /**

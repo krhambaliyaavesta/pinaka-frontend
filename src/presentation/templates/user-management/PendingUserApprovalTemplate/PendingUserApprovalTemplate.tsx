@@ -23,7 +23,7 @@ export function PendingUserApprovalTemplate({
   return (
     <div className={`min-h-screen bg-[#FFFDF5] ${className}`}>
       <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto pl-0 pr-2 py-4">
           <h1 className="text-2xl font-bold text-gray-900">
             User Approval Dashboard
           </h1>
@@ -33,7 +33,7 @@ export function PendingUserApprovalTemplate({
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto pl-0 pr-2 py-6">
         <PendingUsersList
           users={users}
           isLoading={isLoading}

@@ -9,7 +9,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSignin } from "@/modules/auth";
 import { useToast } from "@/modules/toast";
 import { useRouter } from "next/navigation";
-import { UserStatus } from "@/modules/auth/domain/enums";
+import { UserRole, UserStatus } from "@/modules/auth/domain/enums";
 
 interface SigninFormProps {
   onSignupClick?: () => void;
@@ -43,15 +43,34 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
       const user = await signin(data.email, data.password);
       if (user) {
         toast.success("Signed in successfully!");
+        console.log("User login successful:", user);
 
-        // Check if user status is pending and redirect to waiting-approval page
+        // Check user status first
         if (user.approvalStatus === UserStatus.PENDING) {
           router.push("/waiting-approval");
-        } else {
-          // Default redirect for approved users
-          router.push("/dashboard");
+          return;
+        }
+
+        // Handle role-based routing
+        switch (user.role) {
+          case UserRole.ADMIN:
+            console.log("Admin user detected, redirecting to dashboard");
+            router.push("/dashboard");
+            break;
+          case UserRole.LEAD:
+            console.log("Lead user detected, redirecting to lead dashboard");
+            router.push("/dashboard");
+            break;
+          case UserRole.MEMBER:
+            console.log("Member user detected, redirecting to member dashboard");
+            router.push("/memberDashboard");
+            break;
+          default:
+            console.log("Unknown role, using default dashboard");
+            router.push("/dashboard");
         }
       } else if (error) {
+        console.error("Signin failed with error:", error);
         toast.error(error.message || "Sign in failed");
       }
     } catch (err) {

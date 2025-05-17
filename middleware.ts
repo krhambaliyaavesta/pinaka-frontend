@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { UserRole } from "./src/modules/auth/domain/enums";
 
 // Public routes that don't require authentication
 // Only "/" and "/login" are public routes where both sign-up and sign-in will be managed
@@ -22,6 +23,7 @@ export async function middleware(request: NextRequest) {
 
   if (!authToken) {
     // No auth token, redirect to login
+    console.error("No auth token found, redirecting to login");
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -38,31 +40,37 @@ export async function middleware(request: NextRequest) {
 
     if (!response.ok) {
       // Token invalid or expired
+      console.error(`Token verification failed with status ${response.status}`);
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
     const responseData = await response.json();
+    console.log("Auth response data:", JSON.stringify(responseData));
 
     // Check for success status and data existence
     if (responseData.status !== "success" || !responseData.data) {
+      console.error("Invalid response format:", JSON.stringify(responseData));
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
     // Extract user from the data field
     const user = responseData.data;
+    console.log("User data:", JSON.stringify(user));
 
     // Role-based route protection
     if (
       adminRoutes.some((route) => pathname.startsWith(route)) &&
-      user.role !== 1
+      user.role !== UserRole.ADMIN
     ) {
+      console.error(`User role ${user.role} does not match admin role ${UserRole.ADMIN}`);
       return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
 
     if (
       leadRoutes.some((route) => pathname.startsWith(route)) &&
-      user.role > 2
+      user.role > UserRole.LEAD
     ) {
+      console.error(`User role ${user.role} does not have lead permissions`);
       return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
 
