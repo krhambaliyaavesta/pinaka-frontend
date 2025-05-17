@@ -33,9 +33,20 @@ export class TokenStorage implements ITokenStorage {
     if (remember) {
       // 30 days if remember is true
       options.maxAge = 30 * 24 * 60 * 60;
+    } else {
+      // 24 hours by default
+      options.maxAge = 24 * 60 * 60;
     }
 
+    // Ensure cookies work in development environment
+    options.path = "/";
+    options.sameSite = "lax"; // Use lax to allow redirects
+
+    // Set the cookie
     this.storageService.set(this.TOKEN_KEY, token, options);
+
+    // Manually set a cookie as a fallback
+    this.setManualCookie(this.TOKEN_KEY, token, options.maxAge);
   }
 
   /**
@@ -68,6 +79,9 @@ export class TokenStorage implements ITokenStorage {
 
     // Clear from storage
     this.storageService.remove(this.TOKEN_KEY);
+
+    // Also clear the manual cookie
+    this.removeManualCookie(this.TOKEN_KEY);
   }
 
   /**
@@ -76,5 +90,30 @@ export class TokenStorage implements ITokenStorage {
    */
   hasToken(): boolean {
     return this.getToken() !== null;
+  }
+
+  /**
+   * Set a cookie manually as a fallback
+   */
+  private setManualCookie(name: string, value: string, maxAge: number): void {
+    if (typeof document === "undefined") return;
+
+    const expires = new Date();
+    expires.setTime(expires.getTime() + maxAge * 1000);
+
+    // Adjust for development environment
+    const sameSite = "lax";
+    const secure = window.location.protocol === "https:" ? "; secure" : "";
+
+    document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; samesite=${sameSite}${secure}`;
+  }
+
+  /**
+   * Remove a cookie manually
+   */
+  private removeManualCookie(name: string): void {
+    if (typeof document === "undefined") return;
+
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   }
 }

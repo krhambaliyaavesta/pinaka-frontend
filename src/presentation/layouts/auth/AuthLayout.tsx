@@ -38,9 +38,7 @@ export const AuthLayout: FC<AuthLayoutProps> = ({
             <h2 className="text-2xl font-semibold text-gray-800 mb-1 mt-4">
               {title}
             </h2>
-            <p className="text-sm text-gray-600 mb-8">
-              {description}
-            </p>
+            <p className="text-sm text-gray-600 mb-8">{description}</p>
           </div>
 
           {children}
@@ -50,4 +48,4 @@ export const AuthLayout: FC<AuthLayoutProps> = ({
   );
 };
 
-export default AuthLayout; 
+export default AuthLayout;

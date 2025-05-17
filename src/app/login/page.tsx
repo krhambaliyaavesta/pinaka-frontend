@@ -1,5 +1,5 @@
 import { SigninSignUp } from "@/presentation/pages/auth/SigninSignUp";
 
 export default function LoginPage() {
-  return <SigninSignUp />;
+  return <SigninSignUp initialView="signin" />;
 }
