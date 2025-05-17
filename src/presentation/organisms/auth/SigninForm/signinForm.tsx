@@ -41,21 +41,32 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
   const onSubmit: SubmitHandler<SigninFormInputs> = async (data) => {
     try {
       const user = await signin(data.email, data.password);
+
+      // Check if login was successful
       if (user) {
+        // Log successful authentication
         toast.success("Signed in successfully!");
 
-        // Check if user status is pending and redirect to waiting-approval page
+        // Verify token exists in storage
+        const tokenExists = window.document.cookie.includes("auth_token=");
+
+        // Check user approval status and redirect accordingly
         if (user.approvalStatus === UserStatus.PENDING) {
           router.push("/waiting-approval");
+        } else if (user.approvalStatus === UserStatus.APPROVED) {
+          // Use a small timeout to ensure cookie is set before redirect
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 100);
         } else {
-          // Default redirect for approved users
-          router.push("/dashboard");
+          // Handle rejected or other status
+
+          router.push("/waiting-approval");
         }
       } else if (error) {
         toast.error(error.message || "Sign in failed");
       }
     } catch (err) {
-      console.error("Signin error:", err);
       toast.error("An unexpected error occurred");
     }
   };

@@ -86,6 +86,9 @@ export class AuthRepository implements IAuthRepository {
       // Double check by also manually setting the cookie
       this.setAuthCookie("auth_token", response.data.token);
 
+      // Verify we can access the token right after setting it
+      const storedToken = this.tokenStorage.getToken();
+
       return this.mapToUser(response.data.user);
     } catch (error) {
       console.error("AuthRepository: Login error", error);
@@ -129,6 +132,9 @@ export class AuthRepository implements IAuthRepository {
 
   async getCurrentUser(): Promise<User | null> {
     try {
+      // Check if we have a token before making the request
+      const token = this.tokenStorage.getToken();
+
       const response = await this.httpClient.get<GetUserResponse>(
         "/api/auth/me"
       );
@@ -140,6 +146,8 @@ export class AuthRepository implements IAuthRepository {
       return this.mapToUser(response.data);
     } catch (error) {
       if (error instanceof AuthenticationError) {
+        // Clear invalid token
+        this.tokenStorage.removeToken();
         return null;
       }
       throw new AuthError(

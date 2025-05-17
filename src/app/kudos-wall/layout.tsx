@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/presentation/organisms/common/Header";
 import Footer from "@/presentation/organisms/common/Footer";
@@ -15,12 +15,18 @@ export default function MemberDashboardLayout({
 }) {
   const router = useRouter();
   const { user, isLoading, error } = useAuth();
+  const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false);
   const containerWidthClass = "max-w-screen-xl";
 
-  // Redirect to login if not authenticated
+  // Redirect to login if not authenticated, but only if we've completed loading
   useEffect(() => {
-    if (!isLoading && (!user || user.approvalStatus !== UserStatus.APPROVED)) {
-      router.push("/login");
+    if (!isLoading) {
+      setHasAttemptedAuth(true);
+
+      // Only redirect if we've confirmed the user is not authenticated
+      if (user === null) {
+        router.push("/login");
+      }
     }
   }, [user, isLoading, router]);
 
@@ -33,9 +39,31 @@ export default function MemberDashboardLayout({
     );
   }
 
-  // Don't render the content if not authenticated
+  // Show a guest view if we're still waiting on auth or user isn't approved
   if (!user || user.approvalStatus !== UserStatus.APPROVED) {
-    return null;
+    // If we've tried authentication and failed, let middleware handle redirect
+    if (hasAttemptedAuth && !user) {
+      return null;
+    }
+
+    // For non-approved users, show a basic view
+    return (
+      <div className="flex flex-col min-h-screen bg-[#FFFDF5]">
+        <div className="py-4">
+          <Header userName="Guest" contained={true} />
+        </div>
+        <main
+          className={`flex-grow ${containerWidthClass} mx-auto px-6 md:px-9 py-6`}
+        >
+          <div className="text-center py-8">
+            <h1 className="text-2xl font-bold mb-4">Welcome to Kudos Wall</h1>
+            <p className="mb-4">Please login to see personalized content.</p>
+          </div>
+          {children}
+        </main>
+        <Footer contained={true} />
+      </div>
+    );
   }
 
   return (
