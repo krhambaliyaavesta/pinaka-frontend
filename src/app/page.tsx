@@ -1,5 +1,5 @@
-import { LoginSignUp } from "@/presentation/pages/auth/LoginSignUp";
+import { SigninSignUp } from "@/presentation/pages/auth/SigninSignUp";
 
 export default function Home() {
-  return <LoginSignUp />;
+  return <SigninSignUp />;
 }

@@ -6,25 +6,28 @@ import { Input } from "@/presentation/atoms/auth/Input/Input";
 import { Button } from "@/presentation/atoms/auth/Button/Button";
 import { MdEmail, MdLock } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useSignin } from "@/modules/auth";
+import { useToast } from "@/modules/toast";
 
-interface LoginFormProps {
+interface SigninFormProps {
   onSignupClick?: () => void;
 }
 
-type LoginFormInputs = {
+type SigninFormInputs = {
   email: string;
   password: string;
 };
 
-export const LoginForm: FC<LoginFormProps> = ({ onSignupClick }) => {
+export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { signin, isLoading, error } = useSignin();
+  const toast = useToast();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormInputs>({
+  } = useForm<SigninFormInputs>({
     mode: "onChange",
   });
 
@@ -32,20 +35,22 @@ export const LoginForm: FC<LoginFormProps> = ({ onSignupClick }) => {
     setShowPassword(!showPassword);
   };
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    setLoading(true);
-    console.log("Submitting login data:", data);
+  const onSubmit: SubmitHandler<SigninFormInputs> = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const user = await signin(data.email, data.password);
+      if (user) {
+        toast.success("Signed in successfully!");
+        // Redirect or update state here as needed
+      } else if (error) {
+        toast.error(error.message || "Sign in failed");
+      }
     } catch (err) {
-      console.error("Login error:", err);
-    } finally {
-      setLoading(false);
+      console.error("Signin error:", err);
+      toast.error("An unexpected error occurred");
     }
   };
 
   const renderPasswordVisibility = () => {
-    
     return (
       <button
         type="button"
@@ -60,7 +65,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSignupClick }) => {
         )}
       </button>
     );
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -70,7 +75,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSignupClick }) => {
             id="email"
             type="email"
             label="Email Address"
-            placeholder="nirupa@example.com"
+            placeholder="Your Official @Company Email"
             autoComplete="email"
             className="pl-10"
             {...register("email", {
@@ -92,7 +97,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSignupClick }) => {
             id="password"
             type={showPassword ? "text" : "password"}
             label="Password"
-            placeholder="••••••••"
+            placeholder="Create Your Secret Handshake (Password)"
             autoComplete="current-password"
             className="pl-10 pr-10"
             {...register("password", {
@@ -122,10 +127,10 @@ export const LoginForm: FC<LoginFormProps> = ({ onSignupClick }) => {
           size="lg"
           className="bg-blue-500 hover:bg-blue-600 text-white mt-4 rounded-full"
           type="submit"
-          disabled={loading}
-          isLoading={loading}
+          disabled={isLoading}
+          isLoading={isLoading}
         >
-          Login Now
+          Sign In
         </Button>
       </form>
 
@@ -143,4 +148,4 @@ export const LoginForm: FC<LoginFormProps> = ({ onSignupClick }) => {
     </div>
   );
 };
-export default LoginForm;
+export default SigninForm;

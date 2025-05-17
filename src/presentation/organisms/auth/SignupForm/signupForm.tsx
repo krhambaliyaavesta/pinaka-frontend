@@ -6,6 +6,8 @@ import { Input } from "@/presentation/atoms/auth/Input/Input";
 import { Button } from "@/presentation/atoms/auth/Button/Button";
 import { MdEmail, MdLock, MdPerson, MdWork } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useSignup } from "@/modules/auth";
+import { useToast } from "@/modules/toast";
 
 interface SignupFormProps {
   onLoginClick?: () => void;
@@ -21,7 +23,8 @@ type SignupFormInputs = {
 
 export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { signup, isLoading, error } = useSignup();
+  const toast = useToast();
 
   const {
     register,
@@ -36,16 +39,27 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
   };
 
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
-    setLoading(true);
-
     try {
-      console.log("Submitting form data:", data);
+      const user = await signup({
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        jobTitle: data.jobTitle || "",
+      });
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (user) {
+        toast.success("Account created successfully!");
+        // Optionally redirect the user or switch to login
+        if (onLoginClick) {
+          onLoginClick();
+        }
+      } else if (error) {
+        toast.error(error.message || "Failed to create account");
+      }
     } catch (err) {
       console.error("Registration error:", err);
-    } finally {
-      setLoading(false);
+      toast.error("An unexpected error occurred");
     }
   };
 
@@ -57,7 +71,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
             id="firstName"
             type="text"
             label="First Name"
-            placeholder="Nirupa"
+            placeholder="Your Awesome First Name"
             autoComplete="given-name"
             className="pl-10"
             {...register("firstName", { required: "First name is required" })}
@@ -73,7 +87,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
             id="lastName"
             type="text"
             label="Last Name"
-            placeholder="Bazar"
+            placeholder="Your Brilliant Last Name"
             autoComplete="family-name"
             className="pl-10"
             {...register("lastName", { required: "Last name is required" })}
@@ -89,7 +103,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
             id="email"
             type="email"
             label="Email Address"
-            placeholder="nirupa@example.com"
+            placeholder="Your Official @Company Email"
             autoComplete="email"
             className="pl-10"
             {...register("email", {
@@ -111,7 +125,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
             id="jobTitle"
             type="text"
             label="Job Title"
-            placeholder="Backend Developer"
+            placeholder="Your Superpower / Role in the Team"
             className="pl-10"
             {...register("jobTitle", { required: "Job title is required" })}
             error={errors.jobTitle?.message}
@@ -126,7 +140,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
             id="password"
             type={showPassword ? "text" : "password"}
             label="Password"
-            placeholder="••••••••"
+            placeholder="Create Your Secret Handshake (Password)"
             className="pl-10 pr-10"
             {...register("password", {
               required: "Password is required",
@@ -159,8 +173,8 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
           size="lg"
           className="bg-blue-500 hover:bg-blue-600 text-white mt-4 rounded-full"
           type="submit"
-          disabled={loading}
-          isLoading={loading}
+          disabled={isLoading}
+          isLoading={isLoading}
         >
           Sign Up
         </Button>
