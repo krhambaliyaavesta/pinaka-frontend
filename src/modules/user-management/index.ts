@@ -9,6 +9,7 @@ export {
   usePendingUsers,
   useApproveUser,
   useRejectUser,
+  useApproveUserWithRole,
 } from "./application/hooks";
 
 // Hooks will be exported here in later phases

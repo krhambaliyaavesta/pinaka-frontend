@@ -1,5 +1,5 @@
 import { User } from "@/modules/auth/domain/entities/User";
-import { UserStatus } from "@/modules/auth/domain/enums";
+import { UserRole, UserStatus } from "@/modules/auth/domain/enums";
 
 /**
  * Repository interface for user management operations
@@ -19,4 +19,12 @@ export interface IUserManagementRepository {
    * @returns Promise resolving to the updated user
    */
   updateUserStatus(userId: string, approvalStatus: UserStatus): Promise<User>;
+
+  /**
+   * Approves a user with a specific role
+   * @param userId The ID of the user to approve
+   * @param role The role to assign to the user
+   * @returns Promise resolving to the updated user
+   */
+  approveUserWithRole(userId: string, role: UserRole): Promise<User>;
 }

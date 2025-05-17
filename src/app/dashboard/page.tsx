@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/modules/auth";
+import { UserRole } from "@/modules/auth/domain/enums";
 import Link from "next/link";
 import { FaUsers } from "react-icons/fa";
 
@@ -8,7 +9,13 @@ export default function DashboardPage() {
   const { user } = useAuth();
 
   // Get user name safely
-  const userName = user?.fullName || "Lead User";
+  const userName = user?.fullName || "User";
+
+  // Determine if user is admin
+  const isAdmin = user?.role === UserRole.ADMIN;
+
+  // Set role-specific text
+  const roleText = isAdmin ? "Admin" : "Lead";
 
   return (
     <div className="space-y-6">
@@ -17,8 +24,9 @@ export default function DashboardPage() {
           Welcome, {userName}!
         </h1>
         <p className="text-teal-700">
-          This is your lead dashboard where you can manage user approvals and
-          access other administrative features.
+          This is your {roleText} dashboard where you can manage user approvals
+          {isAdmin && ", assign roles"} and access other administrative
+          features.
         </p>
       </div>
 
@@ -36,7 +44,8 @@ export default function DashboardPage() {
                 User Approval
               </h2>
               <p className="text-gray-600">
-                Review and manage pending user registrations
+                Review{isAdmin && ", assign roles,"} and manage pending user
+                registrations
               </p>
             </div>
           </div>

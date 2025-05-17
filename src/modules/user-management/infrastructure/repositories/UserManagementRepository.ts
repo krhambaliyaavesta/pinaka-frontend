@@ -65,8 +65,6 @@ export class UserManagementRepository implements IUserManagementRepository {
         throw new Error("Invalid response from server");
       }
 
-      console.log("API response:", response.data);
-
       // Extract users array from the response
       const { users } = response.data;
 
@@ -129,6 +127,44 @@ export class UserManagementRepository implements IUserManagementRepository {
       }
 
       throw new Error("Failed to update user status");
+    }
+  }
+
+  /**
+   * Approves a user with a specific role through the API
+   * @param userId The ID of the user to approve
+   * @param role The role to assign to the user
+   * @returns Promise resolving to the updated User
+   */
+  async approveUserWithRole(userId: string, role: UserRole): Promise<User> {
+    try {
+      // Create payload with both approval status and role
+      const payload = {
+        approvalStatus: UserStatus.APPROVED,
+        role,
+      };
+
+      const response = await this.httpClient.put<UpdateUserStatusResponse>(
+        `/api/admin/users/${userId}`,
+        payload
+      );
+
+      if (response.status !== "success" || !response.data) {
+        throw new Error("Invalid response from server");
+      }
+
+      return this.mapToUser(response.data);
+    } catch (error) {
+      console.error(
+        "UserManagementRepository: Approve user with role error",
+        error
+      );
+
+      if (error instanceof NetworkError) {
+        throw new Error("Network error during approval with role");
+      }
+
+      throw new Error("Failed to approve user with role");
     }
   }
 

@@ -21,8 +21,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     // Don't redirect during loading
     if (isLoading) return;
 
-    // Redirect if not authenticated or not a lead
-    if (!user || user.role !== UserRole.LEAD) {
+    // Redirect if not authenticated or not a lead or admin
+    if (
+      !user ||
+      (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)
+    ) {
       router.push("/login");
     }
   }, [isLoading, user, router]);
@@ -36,10 +39,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     );
   }
 
-  // Only render content if user is a lead
-  if (!user || user.role !== UserRole.LEAD) {
+  // Only render content if user is a lead or admin
+  if (!user || (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)) {
     return null;
   }
+
+  const isAdmin = user.role === UserRole.ADMIN;
+  const dashboardTitle = isAdmin ? "Admin Dashboard" : "Lead Dashboard";
+  const userRoleDisplay = isAdmin ? "Admin" : "Lead";
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -50,7 +57,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar - desktop */}
       <div className="hidden md:flex w-64 flex-col bg-white shadow-md">
         <div className="p-5 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-teal-600">Lead Dashboard</h1>
+          <h1 className="text-xl font-bold text-teal-600">{dashboardTitle}</h1>
         </div>
         <nav className="flex-1 p-5 space-y-1">
           <Link
@@ -75,7 +82,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
             <div className="ml-3">
               <p className="text-sm font-medium">{user.fullName}</p>
-              <p className="text-xs text-gray-500">Lead</p>
+              <p className="text-xs text-gray-500">{userRoleDisplay}</p>
             </div>
           </div>
         </div>
@@ -84,7 +91,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Mobile header */}
       <div className="md:hidden fixed top-0 inset-x-0 z-10 bg-white shadow-md p-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold text-teal-600">Lead Dashboard</h1>
+          <h1 className="text-xl font-bold text-teal-600">{dashboardTitle}</h1>
           <button
             onClick={toggleMobileMenu}
             className="text-gray-600 focus:outline-none"
@@ -121,7 +128,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="bg-white h-full w-64 p-5 shadow-lg">
             <div className="flex justify-between items-center mb-5">
               <h1 className="text-xl font-bold text-teal-600">
-                Lead Dashboard
+                {dashboardTitle}
               </h1>
               <button
                 onClick={toggleMobileMenu}
@@ -167,7 +174,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium">{user.fullName}</p>
-                  <p className="text-xs text-gray-500">Lead</p>
+                  <p className="text-xs text-gray-500">{userRoleDisplay}</p>
                 </div>
               </div>
             </div>
