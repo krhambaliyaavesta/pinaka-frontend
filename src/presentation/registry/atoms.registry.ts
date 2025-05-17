@@ -1,10 +1,12 @@
 import { Toast } from "@/presentation/atoms/common/Toast/Toast";
+import { CelebrationCard } from "@/presentation/atoms/CelebrationCard/CelebrationCard";
 
 /**
  * Common atomic components available throughout the application
  */
 export const CommonAtoms = {
   Toast,
+  CelebrationCard,
   // Other common atoms will be added here
 };
 

@@ -27,91 +27,102 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
     switch (type) {
       case 'appreciation':
         return {
-          primary: '#FFF5EA',
-          secondary: '#F5C28A',
+          primary: 'linear-gradient(135deg, #FFF5EA 0%, #FFEAD1 100%)',
+          secondary: 'linear-gradient(to right, #F5C28A, #F9A852)',
           textMain: '#C15C1C',
           textSecondary: '#C15C1C',
-          icon: '#F5C28A'
+          icon: 'linear-gradient(135deg, #F5C28A 0%, #F9A852 100%)',
+          shadow: 'rgba(245, 194, 138, 0.4)'
         };
       case 'gratitude':
         return {
-          primary: '#F0FAF3',
-          secondary: '#8ECAA6',
+          primary: 'linear-gradient(135deg, #F0FAF3 0%, #DBEEE2 100%)',
+          secondary: 'linear-gradient(to right, #8ECAA6, #65BD87)',
           textMain: '#2D7155',
           textSecondary: '#2D7155',
-          icon: '#8ECAA6'
+          icon: 'linear-gradient(135deg, #8ECAA6 0%, #65BD87 100%)',
+          shadow: 'rgba(142, 202, 166, 0.4)'
         };
       case 'thankYou':
         return {
-          primary: '#EEF2FA',
-          secondary: '#93A8D6',
+          primary: 'linear-gradient(135deg, #EEF2FA 0%, #DCE5F7 100%)',
+          secondary: 'linear-gradient(to right, #93A8D6, #7186C7)',
           textMain: '#394B6D',
           textSecondary: '#394B6D',
-          icon: '#93A8D6'
+          icon: 'linear-gradient(135deg, #93A8D6 0%, #7186C7 100%)',
+          shadow: 'rgba(147, 168, 214, 0.5)'
         };
       case 'greatJob':
         return {
-          primary: '#F0FAF3',
-          secondary: '#8ECAA6',
+          primary: 'linear-gradient(135deg, #F0FAF3 0%, #DBEEE2 100%)',
+          secondary: 'linear-gradient(to right, #8ECAA6, #65BD87)',
           textMain: '#2D7155',
           textSecondary: '#2D7155',
-          icon: '#8ECAA6'
+          icon: 'linear-gradient(135deg, #8ECAA6 0%, #65BD87 100%)',
+          shadow: 'rgba(142, 202, 166, 0.4)'
         };
       case 'teamwork':
         return {
-          primary: '#EEF2FA',
-          secondary: '#93A8D6',
+          primary: 'linear-gradient(135deg, #EEF2FA 0%, #DCE5F7 100%)',
+          secondary: 'linear-gradient(to right, #93A8D6, #7186C7)',
           textMain: '#394B6D',
           textSecondary: '#394B6D',
-          icon: '#93A8D6'
+          icon: 'linear-gradient(135deg, #93A8D6 0%, #7186C7 100%)',
+          shadow: 'rgba(147, 168, 214, 0.5)'
         };
       case 'problemSolving':
         return {
-          primary: '#FFF5EA',
-          secondary: '#F5C28A',
+          primary: 'linear-gradient(135deg, #FFF5EA 0%, #FFEAD1 100%)',
+          secondary: 'linear-gradient(to right, #F5C28A, #F9A852)',
           textMain: '#C15C1C',
           textSecondary: '#C15C1C',
-          icon: '#F5C28A'
+          icon: 'linear-gradient(135deg, #F5C28A 0%, #F9A852 100%)',
+          shadow: 'rgba(245, 194, 138, 0.4)'
         };
       case 'support':
         return {
-          primary: '#F2FCFE',
-          secondary: '#7FCCE1',
+          primary: 'linear-gradient(135deg, #F2FCFE 0%, #E0F5FA 100%)',
+          secondary: 'linear-gradient(to right, #7FCCE1, #5ABCD6)',
           textMain: '#2D6F7F',
           textSecondary: '#2D6F7F',
-          icon: '#7FCCE1'
+          icon: 'linear-gradient(135deg, #7FCCE1 0%, #5ABCD6 100%)',
+          shadow: 'rgba(127, 204, 225, 0.4)'
         };
       case 'guidingLight':
         return {
-          primary: '#F6F9EE',
-          secondary: '#9FB883',
+          primary: 'linear-gradient(135deg, #F6F9EE 0%, #ECF3D9 100%)',
+          secondary: 'linear-gradient(to right, #9FB883, #8AA968)',
           textMain: '#4A5D38',
           textSecondary: '#4A5D38',
-          icon: '#9FB883'
+          icon: 'linear-gradient(135deg, #9FB883 0%, #8AA968 100%)',
+          shadow: 'rgba(159, 184, 131, 0.4)'
         };
       case 'codeQuality':
         return {
-          primary: '#FAF2F4',
-          secondary: '#D396A4',
+          primary: 'linear-gradient(135deg, #FAF2F4 0%, #F4E2E7 100%)',
+          secondary: 'linear-gradient(to right, #D396A4, #C97789)',
           textMain: '#8A4A59',
           textSecondary: '#8A4A59',
-          icon: '#D396A4'
+          icon: 'linear-gradient(135deg, #D396A4 0%, #C97789 100%)',
+          shadow: 'rgba(211, 150, 164, 0.4)'
         };
       case 'aboveAndBeyond':
         return {
-          primary: '#FCF2F2',
-          secondary: '#D67878',
+          primary: 'linear-gradient(135deg, #FCF2F2 0%, #F7E2E2 100%)',
+          secondary: 'linear-gradient(to right, #D67878, #CC5353)',
           textMain: '#7A2C2C',
           textSecondary: '#7A2C2C',
-          icon: '#D67878'
+          icon: 'linear-gradient(135deg, #D67878 0%, #CC5353 100%)',
+          shadow: 'rgba(214, 120, 120, 0.4)'
         };
       default:
         return {
-          primary: '#FFF5EA',
-          secondary: '#F5C28A',
+          primary: 'linear-gradient(135deg, #FFF5EA 0%, #FFEAD1 100%)',
+          secondary: 'linear-gradient(to right, #F5C28A, #F9A852)',
           textMain: '#C15C1C',
           textSecondary: '#C15C1C',
-          icon: '#F5C28A'
+          icon: 'linear-gradient(135deg, #F5C28A 0%, #F9A852 100%)',
+          shadow: 'rgba(245, 194, 138, 0.4)'
         };
     }
   };
@@ -136,28 +147,62 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
       bgAnimContainer.style.zIndex = '1'; // Above the base card but below content
       card.appendChild(bgAnimContainer);
       
-      // Create star particles
-      for (let i = 0; i < 6; i++) {
+      // Create colorful star particles
+      const starColors = ['#FF5E5B', '#39A0ED', '#FFBE0B', '#66D8B5', '#FF7BBF', '#8A4FFF'];
+      
+      for (let i = 0; i < 8; i++) {
         const star = document.createElement('div');
-        star.className = 'absolute w-2 h-2 bg-white opacity-0';
+        star.className = 'absolute w-2 h-2 opacity-0';
+        star.style.backgroundColor = starColors[i % starColors.length];
         
-        // Position only in the top section
-        star.style.left = `${Math.random() * 80 + 10}%`;
-        star.style.top = `${Math.random() * 25 + 5}%`;
+        // Position particles across the entire card
+        star.style.left = `${Math.random() * 90 + 5}%`;
+        star.style.top = `${Math.random() * 70 + 5}%`;
         
         star.style.animation = `star-twinkle ${1.5 + Math.random()}s ease-in-out ${i * 0.3}s infinite`;
         star.style.clipPath = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)';
+        star.style.filter = 'drop-shadow(0 0 2px ' + starColors[i % starColors.length] + ')';
         bgAnimContainer.appendChild(star);
       }
       
-      // Create connecting circles
-      for (let i = 0; i < 2; i++) {
+      // Create colorful connecting circles
+      const circleColors = ['rgba(255, 94, 91, 0.5)', 'rgba(57, 160, 237, 0.5)', 'rgba(255, 190, 11, 0.5)', 'rgba(102, 216, 181, 0.5)'];
+      
+      for (let i = 0; i < 3; i++) {
         const circle = document.createElement('div');
-        circle.className = 'absolute rounded-full w-5 h-5 border border-white/30 opacity-0';
-        circle.style.right = `${10 + (i * 15)}%`;
-        circle.style.top = `${10 + (i % 2) * 10}%`;
+        circle.className = 'absolute rounded-full w-5 h-5 opacity-0';
+        circle.style.border = `1px solid ${circleColors[i % circleColors.length]}`;
+        circle.style.filter = 'blur(0.5px)';
+        
+        // Distribute circles around the card
+        const positions = [
+          { right: '10%', top: '15%' },
+          { left: '10%', top: '25%' },
+          { right: '20%', bottom: '30%' }
+        ];
+        
+        const pos = positions[i % positions.length];
+        Object.entries(pos).forEach(([key, value]) => {
+          circle.style[key as any] = value;
+        });
+        
         circle.style.animation = `circle-connect 3s ease-in-out ${i * 0.6}s infinite`;
         bgAnimContainer.appendChild(circle);
+      }
+      
+      // Add floating sparkles
+      for (let i = 0; i < 6; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'absolute w-1 h-1 rounded-full opacity-0';
+        sparkle.style.backgroundColor = starColors[i % starColors.length];
+        sparkle.style.filter = 'blur(0.5px) drop-shadow(0 0 1px ' + starColors[i % starColors.length] + ')';
+        
+        // Position sparkles throughout the card
+        sparkle.style.left = `${Math.random() * 90 + 5}%`;
+        sparkle.style.top = `${Math.random() * 90 + 5}%`;
+        
+        sparkle.style.animation = `sparkle-float ${2 + Math.random() * 2}s linear ${i * 0.4}s infinite`;
+        bgAnimContainer.appendChild(sparkle);
       }
     }
     
@@ -234,20 +279,23 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
     <div 
       ref={cardRef}
       onClick={onClick}
-      className={`relative overflow-hidden rounded-xl shadow-md transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 ${
+      className={`relative overflow-hidden rounded-xl transition-all duration-300 ease-in-out hover:scale-105 ${
         isSelected ? 'ring-2 ring-white' : ''
-      } w-full max-w-xs mx-auto h-[380px] flex flex-col`}
-      style={{ background: colors.primary }}
+      } w-full max-w-xs mx-auto h-[440px] flex flex-col`}
+      style={{ 
+        background: colors.primary,
+        boxShadow: `0 10px 25px -5px ${colors.shadow}, 0 8px 10px -6px rgba(0, 0, 0, 0.1)`
+      }}
     >
       <div className="relative z-10 flex flex-col items-center h-full">
         {/* Icon */}
-        <div className="mt-6 mb-4">
+        <div className="mt-8 mb-5">
           <div 
             ref={iconRef}
-            className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-2 border-white/50 relative cursor-pointer transition-all duration-300"
+            className="w-18 h-18 rounded-full flex items-center justify-center relative cursor-pointer transition-all duration-300"
             style={{ 
               background: colors.icon,
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' 
+              boxShadow: `0 8px 16px -2px ${colors.shadow}, 0 0 0 2px rgba(255, 255, 255, 0.6)` 
             }}
           >
             <KudosCardIcon type={getIconType()} size={32} className="text-white relative z-10 transition-transform duration-300" />
@@ -257,32 +305,38 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
         {/* Title */}
         <h2 
           className="text-2xl font-bold uppercase tracking-wide text-center mb-4 px-4"
-          style={{ color: colors.textMain }}
+          style={{ 
+            color: colors.textMain,
+            textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+          }}
         >
           {title}
         </h2>
         
         {/* Description */}
         <p 
-          className="text-center mb-4 px-6"
+          className="text-center mb-5 px-8 leading-relaxed"
           style={{ color: colors.textMain }}
         >
           {description}
         </p>
         
         {/* Member Name */}
-        <div className="flex-grow flex flex-col justify-center items-center px-6">
+        <div className="flex-grow flex flex-col justify-center items-center px-6 mb-4">
           {memberName && (
-            <div className="text-center">
+            <div className="text-center bg-white/30 backdrop-blur-sm py-3 px-5 rounded-lg">
               <p 
-                className="text-sm mb-1"
+                className="text-sm mb-1 font-medium"
                 style={{ color: colors.textMain }}
               >
                 Awarded to
               </p>
               <h3 
                 className="text-xl font-bold"
-                style={{ color: colors.textMain }}
+                style={{ 
+                  color: colors.textMain,
+                  textShadow: '0 1px 1px rgba(0,0,0,0.05)'
+                }}
               >
                 {memberName}
               </h3>
@@ -292,11 +346,16 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
         
         {/* Bottom Note */}
         <div 
-          className="w-full rounded-b-xl flex items-center justify-center py-4 px-3 mt-auto"
-          style={{ background: colors.secondary }}
+          className="w-full rounded-b-xl flex items-center justify-center py-6 px-6 mt-auto overflow-visible"
+          style={{ 
+            background: colors.secondary,
+            minHeight: '80px',
+            borderBottomLeftRadius: '0.75rem',
+            borderBottomRightRadius: '0.75rem'
+          }}
         >
           {leadershipNote ? (
-            <p className="italic text-sm text-center"
+            <p className="italic text-sm text-center font-medium py-1"
                style={{ color: '#FFFFFF' }}>
               "{leadershipNote}"
             </p>
@@ -318,7 +377,7 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
           }
           50% { 
             opacity: 0.9;
-            transform: scale(1.2);
+            transform: scale(1.2) rotate(45deg);
           }
         }
         
@@ -328,12 +387,35 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
             transform: scale(0.3);
           }
           40%, 60% { 
-            opacity: 0.5;
+            opacity: 0.7;
             transform: scale(1);
           }
           100% { 
             opacity: 0;
             transform: scale(1.5);
+          }
+        }
+        
+        @keyframes sparkle-float {
+          0% {
+            opacity: 0;
+            transform: translate(0, 0) scale(1);
+          }
+          25% {
+            opacity: 0.8;
+            transform: translate(5px, -5px) scale(1.5);
+          }
+          50% {
+            opacity: 0.4;
+            transform: translate(10px, 0) scale(0.8);
+          }
+          75% {
+            opacity: 0.6; 
+            transform: translate(5px, 5px) scale(1.2);
+          }
+          100% {
+            opacity: 0;
+            transform: translate(0, 0) scale(1);
           }
         }
         
@@ -373,7 +455,7 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
             opacity: 0;
           }
           50% {
-            opacity: 0.6;
+            opacity: 0.8;
           }
         }
         
@@ -383,12 +465,12 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
             transform: scale(0) translateY(0);
           }
           50% {
-            opacity: 0.8;
-            transform: scale(1.2) translateY(-10px);
+            opacity: 1;
+            transform: scale(1.5) translateY(-10px) rotate(15deg);
           }
           100% {
             opacity: 0;
-            transform: scale(0.5) translateY(-20px);
+            transform: scale(0.8) translateY(-20px) rotate(30deg);
           }
         }
         

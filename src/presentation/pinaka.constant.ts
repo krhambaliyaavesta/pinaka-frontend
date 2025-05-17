@@ -1,4 +1,5 @@
 import { KudosCardType } from "./molecules/common/KudosCard/KudosCard";
+import { FilterOption } from "./atoms/common/FilterDropdown";
 
 export const kudosCards: KudosCardType[] = [
     {
@@ -66,3 +67,35 @@ export const kudosCards: KudosCardType[] = [
       leadershipNote: 'Working through the weekend to ensure the client demo was flawless and successful.'
     }
   ];
+
+// Filter Options for Kudos
+export const recipientOptions: FilterOption[] = [
+  { id: '1', name: 'Alex Rodriguez' },
+  { id: '2', name: 'Sarah Johnson' },
+  { id: '3', name: 'Michael Chen' },
+  { id: '4', name: 'Priya Sharma' },
+  { id: '5', name: 'David Wilson' },
+  { id: '6', name: 'Emma Garcia' },
+  { id: '7', name: 'James Taylor' }
+];
+
+export const teamOptions: FilterOption[] = [
+  { id: '1', name: 'Engineering' },
+  { id: '2', name: 'Product' },
+  { id: '3', name: 'Design' },
+  { id: '4', name: 'Marketing' },
+  { id: '5', name: 'Customer Support' },
+  { id: '6', name: 'Sales' },
+  { id: '7', name: 'Management' }
+];
+
+export const categoryOptions: FilterOption[] = [
+  { id: 'thankYou', name: 'Thank You' },
+  { id: 'greatJob', name: 'Great Job' },
+  { id: 'teamwork', name: 'Awesome Teamwork' },
+  { id: 'support', name: 'Support Star' },
+  { id: 'problemSolving', name: 'Problem Solving' },
+  { id: 'guidingLight', name: 'Guiding Light' },
+  { id: 'codeQuality', name: 'Code Quality' },
+  { id: 'aboveAndBeyond', name: 'Above and Beyond' }
+];

@@ -1,13 +1,29 @@
+'use client';
+
 import { KudosCardsSection } from '@/presentation/templates/common/KudosCardsSection';
+import { CelebrationCard } from '@/presentation/atoms/CelebrationCard/CelebrationCard';
+import { useState, useEffect } from 'react';
 
 export default function MemberDashboardPage() {
+  const [showCelebration, setShowCelebration] = useState(true);
+
+  // Hide celebration card after user closes it
+  const handleCloseCelebration = () => {
+    setShowCelebration(false);
+  };
+
   return (
     <div className="space-y-6">
-      {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 relative">
-        <div className="absolute -top-3 -left-3 w-10 h-10 bg-[#42B4AC] opacity-50 rounded-md transform rotate-12"></div>
-        <h1 className="text-2xl font-semibold text-gray-800 mb-4 relative z-10">Member Dashboard</h1>
-        <p className="text-gray-600 relative z-10">Welcome to your dashboard. Here you can manage your account and access various features.</p>
-      </div> */}
+      {/* Render CelebrationCard only if showCelebration is true */}
+      {/* {showCelebration && (
+        <CelebrationCard
+          cardType="Thank You"
+          title="Exceptional Teamwork"
+          subtitle="For your outstanding contributions and dedication"
+          awardedTo="Alex Rodriguez"
+          onClose={handleCloseCelebration}
+        />
+      )} */}
       
       <KudosCardsSection 
         title="Kudos Cards"
