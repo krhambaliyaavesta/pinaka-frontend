@@ -2,14 +2,35 @@
 
 import { Button } from "@/presentation/atoms/auth/Button/Button";
 import { useRouter } from "next/navigation";
-import { useLogout } from "@/modules/auth";
+import { useLogout, useAuth } from "@/modules/auth";
 import { useToast } from "@/modules/toast";
 import { HiClock } from "react-icons/hi";
+import { useEffect } from "react";
+import { UserStatus } from "@/modules/auth/domain/enums";
 
 export default function WaitingApprovalPage() {
   const router = useRouter();
-  const { logout, isLoading } = useLogout();
+  const { logout, isLoading: logoutLoading } = useLogout();
+  const { user, isLoading: authLoading } = useAuth();
   const toast = useToast();
+
+  // Redirect approved users to dashboard
+  useEffect(() => {
+    if (!authLoading && user) {
+      // If user is approved, redirect to dashboard
+      if (user.approvalStatus === UserStatus.APPROVED) {
+        router.push("/dashboard");
+        toast.info("Your account has been approved!");
+      }
+      // If user is rejected (implementing this to handle possible rejected state)
+      else if (user.approvalStatus === UserStatus.REJECTED) {
+        // We still allow them to see this page but with a different message
+        toast.error(
+          "Your account registration has been rejected. Please contact support."
+        );
+      }
+    }
+  }, [user, authLoading, router, toast]);
 
   const handleLogout = async () => {
     try {
@@ -21,6 +42,17 @@ export default function WaitingApprovalPage() {
     }
   };
 
+  // Show loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+        <p className="mt-4 text-gray-600">Checking account status...</p>
+      </div>
+    );
+  }
+
+  // Only render the page content if user exists and is not approved
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white p-8 shadow-xl">
@@ -33,32 +65,49 @@ export default function WaitingApprovalPage() {
 
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Account Pending Approval
+            {user?.approvalStatus === UserStatus.REJECTED
+              ? "Account Registration Rejected"
+              : "Account Pending Approval"}
           </h2>
           <p className="mt-3 text-gray-600">
-            Your account is currently under review. You'll be notified via email
-            when it's approved.
+            {user?.approvalStatus === UserStatus.REJECTED
+              ? "Unfortunately, your account registration has been rejected. Please contact support for more information."
+              : "Your account is currently under review. You'll be notified via email when it's approved."}
           </p>
         </div>
 
         <div className="mt-8 flex flex-col">
-          <div className="bg-amber-50 p-4 rounded-lg border border-amber-100 mb-6">
-            <p className="text-amber-800 text-sm">
-              <span className="font-semibold block mb-1">
-                What happens next?
-              </span>
-              Our team is reviewing your application. This typically takes 1-2
-              business days.
-            </p>
-          </div>
+          {user?.approvalStatus === UserStatus.PENDING && (
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-100 mb-6">
+              <p className="text-amber-800 text-sm">
+                <span className="font-semibold block mb-1">
+                  What happens next?
+                </span>
+                Our team is reviewing your application. This typically takes 1-2
+                business days.
+              </p>
+            </div>
+          )}
+
+          {user?.approvalStatus === UserStatus.REJECTED && (
+            <div className="bg-red-50 p-4 rounded-lg border border-red-100 mb-6">
+              <p className="text-red-800 text-sm">
+                <span className="font-semibold block mb-1">
+                  Need assistance?
+                </span>
+                If you believe this is an error or need more information, please
+                contact our support team.
+              </p>
+            </div>
+          )}
 
           <Button
             onClick={handleLogout}
             variant="primary"
             size="lg"
             fullWidth
-            isLoading={isLoading}
-            disabled={isLoading}
+            isLoading={logoutLoading}
+            disabled={logoutLoading}
             className="rounded-lg shadow-sm"
           >
             Log Out

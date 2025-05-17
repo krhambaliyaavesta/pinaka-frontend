@@ -5,9 +5,19 @@ import type { NextRequest } from "next/server";
 // Only "/" and "/login" are public routes where both sign-up and sign-in will be managed
 const publicRoutes = ["/", "/login"];
 
+// Route that only pending/rejected users should see
+const pendingRoute = "/waiting-approval";
+
 // Role-specific route prefixes
 const adminRoutes = ["/admin"];
 const leadRoutes = ["/leads"];
+
+// User status enum (matching the one in the application)
+enum UserStatus {
+  APPROVED = "APPROVED",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -50,6 +60,33 @@ export async function middleware(request: NextRequest) {
 
     // Extract user from the data field
     const user = responseData.data;
+
+    // === ADDED: Route protection based on approval status ===
+
+    // Redirect pending/rejected users to waiting-approval page
+    if (
+      user.approvalStatus === UserStatus.PENDING ||
+      user.approvalStatus === UserStatus.REJECTED
+    ) {
+      // If they're not already on waiting-approval, redirect them there
+      if (!pathname.startsWith(pendingRoute)) {
+        return NextResponse.redirect(new URL(pendingRoute, request.url));
+      }
+
+      // Allow them to access waiting-approval
+      return NextResponse.next();
+    }
+
+    // Prevent approved users from accessing waiting-approval
+    if (
+      user.approvalStatus === UserStatus.APPROVED &&
+      pathname.startsWith(pendingRoute)
+    ) {
+      // Redirect to dashboard if they try to access waiting-approval
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    // === END ADDED SECTION ===
 
     // Role-based route protection
     if (
