@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ToastType } from "../../../../modules/toast";
-import { Toast } from "../../../atoms/common/Toast/Toast";
+import { ToastType } from "@/modules/toast";
+import { Toast } from "@/presentation/atoms/common/Toast/Toast";
 
 /**
  * Props for the ToastWithAction component

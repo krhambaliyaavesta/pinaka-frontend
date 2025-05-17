@@ -1,9 +1,9 @@
 "use client";
 
 import { toast } from "sonner";
-import { ToastType } from "../../domain/enums/ToastType";
-import { IToast } from "../../domain/interfaces/IToast";
-import { ToastPresenter } from "../presenters/ToastPresenter";
+import { ToastType } from "@/modules/toast/domain/enums/ToastType";
+import { IToast } from "@/modules/toast/domain/interfaces/IToast";
+import { ToastPresenter } from "@/modules/toast/infrastructure/presenters/ToastPresenter";
 
 /**
  * Adapter that connects the ToastPresenter to the sonner toast library

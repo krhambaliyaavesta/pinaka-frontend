@@ -21,8 +21,8 @@ function ToastAdapter() {
 
     // Create and initialize the adapter
     // The adapter self-registers with the presenter events
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const adapter = new SonnerAdapter(presenter, 5000);
+    // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // const adapter = new SonnerAdapter(presenter, 5000);
 
     // No cleanup needed for now as SonnerAdapter doesn't expose a cleanup method
     // This will be addressed in the architecture improvements

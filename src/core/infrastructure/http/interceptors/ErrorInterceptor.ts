@@ -7,7 +7,7 @@ import {
   NetworkError,
   NotFoundError,
   ServerError,
-} from "../errors/HttpError";
+} from "@/core/infrastructure/http/errors/HttpError";
 
 // Define a type for API error responses
 interface ApiErrorResponse {

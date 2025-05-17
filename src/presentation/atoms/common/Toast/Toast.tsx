@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ToastType } from "../../../../modules/toast";
+import { ToastType } from "@/modules/toast";
 
 /**
  * Props for the Toast component

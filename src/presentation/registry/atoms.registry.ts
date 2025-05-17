@@ -1,4 +1,4 @@
-import { Toast } from "../atoms/common/Toast/Toast";
+import { Toast } from "@/presentation/atoms/common/Toast/Toast";
 
 /**
  * Common atomic components available throughout the application

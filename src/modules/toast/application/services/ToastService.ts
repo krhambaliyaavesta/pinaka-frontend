@@ -1,8 +1,8 @@
-import { Toast } from "../../domain/entities/Toast";
-import { ToastType } from "../../domain/enums/ToastType";
-import { IToast } from "../../domain/interfaces/IToast";
-import { IToastService } from "../../domain/interfaces/IToastService";
-import { IToastPresenter } from "../ports/IToastPresenter";
+import { Toast } from "@/modules/toast/domain/entities/Toast";
+import { ToastType } from "@/modules/toast/domain/enums/ToastType";
+import { IToast } from "@/modules/toast/domain/interfaces/IToast";
+import { IToastService } from "@/modules/toast/domain/interfaces/IToastService";
+import { IToastPresenter } from "@/modules/toast/application/ports/IToastPresenter";
 
 /**
  * Implementation of the toast service that handles toast operations

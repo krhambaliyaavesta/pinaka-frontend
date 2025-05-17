@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { ToastType } from "../enums/ToastType";
-import { IToast } from "../interfaces/IToast";
+import { ToastType } from "@/modules/toast/domain/enums/ToastType";
+import { IToast } from "@/modules/toast/domain/interfaces/IToast";
 
 /**
  * Core Toast entity representing a toast notification

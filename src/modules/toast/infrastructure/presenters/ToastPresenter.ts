@@ -1,5 +1,5 @@
-import { IToast } from "../../domain/interfaces/IToast";
-import { IToastPresenter } from "../../application/ports/IToastPresenter";
+import { IToast } from "@/modules/toast/domain/interfaces/IToast";
+import { IToastPresenter } from "@/modules/toast/application/ports/IToastPresenter";
 
 /**
  * Type for a toast event handler function
