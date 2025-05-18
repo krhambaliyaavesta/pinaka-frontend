@@ -5,13 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import teamCollaboration from "/public/images/team-collaboration.svg";
-import { features, Feature } from "./constants/features";
+import { features } from "./constants/features";
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasAuthToken, setHasAuthToken] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true);
+    // Check for auth token on client-side
+    const authToken = document.cookie.includes("auth_token");
+    setHasAuthToken(authToken);
   }, []);
 
   // Animation variants
@@ -64,29 +68,32 @@ export default function Home() {
   };
 
   const renderButtons = () => {
-    return (
-      <motion.div
-        className="flex flex-wrap justify-center gap-4"
-        variants={itemVariants}
-      >
-        <motion.div variants={buttonVariants}>
-          <Link
-            href="/login"
-            className="bg-[#42B4AC] text-white px-8 py-3 rounded-lg text-lg font-medium inline-block shadow-lg transition-all duration-300 hover:bg-[#2A9D96]"
-          >
-            Login
-          </Link>
+    if (!hasAuthToken) {
+      return (
+        <motion.div
+          className="flex flex-wrap justify-center gap-4"
+          variants={itemVariants}
+        >
+          <motion.div variants={buttonVariants}>
+            <Link
+              href="/login"
+              className="bg-[#42B4AC] text-white px-8 py-3 rounded-lg text-lg font-medium inline-block shadow-lg transition-all duration-300 hover:bg-[#2A9D96]"
+            >
+              Login
+            </Link>
+          </motion.div>
+          <motion.div variants={buttonVariants}>
+            <Link
+              href="/login"
+              className="bg-white text-[#42B4AC] border-2 border-[#42B4AC] px-8 py-3 rounded-lg text-lg font-medium inline-block shadow-md transition-all duration-300 hover:bg-[#F1FBF9]"
+            >
+              Sign Up
+            </Link>
+          </motion.div>
         </motion.div>
-        <motion.div variants={buttonVariants}>
-          <Link
-            href="/login"
-            className="bg-white text-[#42B4AC] border-2 border-[#42B4AC] px-8 py-3 rounded-lg text-lg font-medium inline-block shadow-md transition-all duration-300 hover:bg-[#F1FBF9]"
-          >
-            Sign Up
-          </Link>
-        </motion.div>
-      </motion.div>
-    );
+      );
+    }
+    return null;
   };
 
   const renderOnLoadDecorativeElements = () => {
@@ -278,10 +285,7 @@ export default function Home() {
               recognition, and positive workplace culture.
             </motion.p>
             <motion.div variants={itemVariants}>
-              <motion.div
-                variants={buttonVariants}
-                className="inline-block"
-              >
+              <motion.div variants={buttonVariants} className="inline-block">
                 <Link
                   href="/login"
                   className="bg-white text-[#42B4AC] px-8 py-3 rounded-lg text-lg font-medium shadow-lg inline-block transition-all duration-300 hover:bg-[#F1FBF9]"
