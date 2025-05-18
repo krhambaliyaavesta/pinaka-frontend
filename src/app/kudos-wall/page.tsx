@@ -44,7 +44,7 @@ async function checkAuth() {
   } catch (error) {
     // Error during verification
     console.error("Auth error:", error);
-    redirect("/login");
+    // redirect("/login");
   }
 }
 

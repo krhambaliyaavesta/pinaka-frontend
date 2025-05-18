@@ -45,7 +45,7 @@ async function checkAuth() {
   } catch (error) {
     // Error during verification
     console.error("Auth error:", error);
-    redirect("/login");
+    // redirect("/login");
   }
 }
 
@@ -56,7 +56,7 @@ async function checkAuth() {
 export default async function DashboardPage() {
   // Check auth before rendering the page
   const user = await checkAuth();
-  
+
   // Get role title
   const userName = user?.fullName || user?.name || user?.email || "User";
   // Determine if user is admin

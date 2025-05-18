@@ -10,34 +10,12 @@ async function checkAlreadyAuthenticated() {
   const cookieStore = await cookies();
   const authToken = cookieStore.get("auth_token");
 
-  // If auth token exists, verify it and redirect to kudos-wall
   if (authToken && authToken.value) {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken.value}`,
-          },
-          cache: "no-store",
-        }
-      );
-
-      // If token is valid, redirect to kudos-wall
-      if (response.ok) {
-        const responseData = await response.json();
-        if (responseData.status === "success" && responseData.data) {
-          redirect("/kudos-wall");
-        }
-      }
-    } catch (error) {
-      // If verification fails, continue to login page
-      console.error("Auth check error:", error);
-    }
+    redirect("/kudos-wall");
+  } else {
+    // redirect("/login");
+    return null;
   }
-
-  // If no token or invalid token, continue to login page
-  return null;
 }
 
 export default async function LoginPage() {
