@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import Header from "@/presentation/organisms/common/Header";
+import { MainNavigation } from "@/presentation/templates/navigation/MainNavigation";
 import Footer from "@/presentation/organisms/common/Footer";
+import { useAuth, useLogout } from "@/modules/auth";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -23,6 +24,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   // Width classes based on contained prop
   const containerWidthClass = contained ? "max-w-screen-xl" : "max-w-[1672px]";
 
+  // Get user data and logout function
+  const { user } = useAuth();
+  const { logout } = useLogout();
+
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFDF5] relative overflow-hidden">
       {/* Decorative elements */}
@@ -32,10 +37,17 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       <div className="absolute top-1/3 right-12 w-4 h-16 bg-[#42B4AC] opacity-30 rounded-sm transform -rotate-12 -z-10 hidden lg:block"></div>
 
       {/* Header */}
-      {!noHeader && (
-        <div className="py-4">
-          <Header contained={contained} />
-        </div>
+      {!noHeader && user && (
+        <MainNavigation
+          user={{
+            fullName: user.fullName,
+            role: user.isAdmin() ? "Admin" : user.isLead() ? "Lead" : "Member",
+            imageUrl: undefined, // User doesn't have a profile image property
+            isAdmin: user.isAdmin(),
+            isLead: user.isLead(),
+          }}
+          onLogout={logout}
+        />
       )}
 
       {/* Main content */}

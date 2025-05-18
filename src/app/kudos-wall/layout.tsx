@@ -2,11 +2,11 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Header from "@/presentation/organisms/common/Header";
 import Footer from "@/presentation/organisms/common/Footer";
-import { useAuth } from "@/modules/auth";
+import { useAuth, useLogout } from "@/modules/auth";
 import { UserStatus } from "@/modules/auth/domain/enums";
 import { Loader } from "@/presentation/atoms/common";
+import { MainNavigation } from "@/presentation/templates/navigation/MainNavigation";
 
 // Main layout component
 export default function MemberDashboardLayout({
@@ -16,6 +16,7 @@ export default function MemberDashboardLayout({
 }) {
   const router = useRouter();
   const { user, isLoading, error } = useAuth();
+  const { logout } = useLogout();
   const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false);
   const containerWidthClass = "w-full max-w-screen-2xl";
 
@@ -46,9 +47,7 @@ export default function MemberDashboardLayout({
     // For non-approved users, show a basic view
     return (
       <div className="flex flex-col min-h-screen bg-[#FFFDF5]">
-        <div className="py-4">
-          <Header userName="Guest" contained={true} />
-        </div>
+        {/* Guest view doesn't need navigation */}
         <main
           className={`flex-grow ${containerWidthClass} !w-full !container mx-auto px-6 md:px-9 py-6`}
         >
@@ -71,9 +70,16 @@ export default function MemberDashboardLayout({
       <div className="absolute bottom-20 left-1/4 w-8 h-8 bg-[#42B4AC] opacity-40 rounded-md transform rotate-45 -z-10 hidden lg:block"></div>
       <div className="absolute top-1/3 right-12 w-4 h-16 bg-[#42B4AC] opacity-30 rounded-sm transform -rotate-12 -z-10 hidden lg:block"></div>
 
-      <div className="py-4">
-        <Header userName={user.fullName} contained={true} />
-      </div>
+      <MainNavigation
+        user={{
+          fullName: user.fullName,
+          role: user.isAdmin() ? "Admin" : user.isLead() ? "Lead" : "Member",
+          imageUrl: undefined,
+          isAdmin: user.isAdmin(),
+          isLead: user.isLead(),
+        }}
+        onLogout={logout}
+      />
 
       <main
         className={`flex-grow ${containerWidthClass} mx-auto px-6 md:px-9 py-6 relative`}

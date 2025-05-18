@@ -66,7 +66,7 @@ export class UserManagementRepository implements IUserManagementRepository {
   async getPendingUsers(): Promise<User[]> {
     try {
       const response = await this.httpClient.get<GetPendingUsersResponse>(
-        "/api/auth/users/pending"
+        "/api/admin/users/pending"
       );
 
       if (response.status !== "success" || !response.data) {

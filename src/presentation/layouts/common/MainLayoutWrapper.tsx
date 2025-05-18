@@ -16,17 +16,19 @@ const MainLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
 
   // Check if current path is one that should not use MainLayout
   // These paths have their own custom layouts
-  const excludedPaths = ["/login", "/dashboard", "/waiting-approval"];
+  const excludedPaths = [
+    "/login",
+    "/dashboard",
+    "/waiting-approval",
+    "/kudos-wall",
+  ];
 
   // Check if current path starts with any of the excluded paths
   const shouldExcludeLayout = excludedPaths.some((path) =>
     pathname.startsWith(path)
   );
 
-  // Specifically for kudos-wall, we want to skip our wrapper since it has its own header/footer
-  const isKudosWall = pathname.startsWith("/kudos-wall");
-
-  if (shouldExcludeLayout || isKudosWall) {
+  if (shouldExcludeLayout) {
     return <>{children}</>;
   }
 
