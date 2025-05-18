@@ -66,7 +66,7 @@ export class UserManagementRepository implements IUserManagementRepository {
   async getPendingUsers(): Promise<User[]> {
     try {
       const response = await this.httpClient.get<GetPendingUsersResponse>(
-        "/api/admin/users/pending"
+        "/api/auth/users/pending"
       );
 
       if (response.status !== "success" || !response.data) {
@@ -112,7 +112,7 @@ export class UserManagementRepository implements IUserManagementRepository {
       const payload = { approvalStatus };
 
       const response = await this.httpClient.put<UpdateUserStatusResponse>(
-        `/api/admin/users/${userId}`,
+        `/api/auth/users/${userId}`,
         payload
       );
 
@@ -150,7 +150,7 @@ export class UserManagementRepository implements IUserManagementRepository {
       };
 
       const response = await this.httpClient.put<UpdateUserStatusResponse>(
-        `/api/admin/users/${userId}`,
+        `/api/auth/users/${userId}`,
         payload
       );
 
@@ -242,7 +242,7 @@ export class UserManagementRepository implements IUserManagementRepository {
       const queryParams = new URLSearchParams();
 
       if (params.search) {
-        queryParams.append("search", params.search);
+        queryParams.append("query", params.search);
       }
 
       if (params.approvalStatus) {
@@ -295,7 +295,7 @@ export class UserManagementRepository implements IUserManagementRepository {
   async updateUser(userId: string, data: UpdateUserData): Promise<User> {
     try {
       const response = await this.httpClient.put<UpdateUserStatusResponse>(
-        `/api/admin/users/${userId}`,
+        `/api/auth/users/${userId}`,
         data
       );
 
