@@ -1,4 +1,4 @@
-import { FaUsers, FaTachometerAlt, FaTimes, FaUserFriends } from "react-icons/fa";
+import { FaUsers, FaTachometerAlt, FaTimes, FaUserFriends, FaLayerGroup, FaIdCard } from "react-icons/fa";
 import Link from "next/link";
 import { UserRole } from "@/modules/auth/domain/enums";
 
@@ -72,6 +72,22 @@ export function Sidebar({ user, isMobile = false, onCloseMobileMenu }: SidebarPr
             <FaUserFriends className="mr-3" />
             <span>Teams</span>
           </Link>
+          <Link
+            href="/dashboard/categories"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+            onClick={onCloseMobileMenu}
+          >
+            <FaLayerGroup className="mr-3" />
+            <span>Categories</span>
+          </Link>
+          <Link
+            href="/dashboard/cards"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+            onClick={onCloseMobileMenu}
+          >
+            <FaIdCard className="mr-3" />
+            <span>Cards</span>
+          </Link>
         </nav>
       </div>
     );
@@ -119,6 +135,20 @@ export function Sidebar({ user, isMobile = false, onCloseMobileMenu }: SidebarPr
         >
           <FaUserFriends className="mr-3" />
           <span>Teams</span>
+        </Link>
+        <Link
+          href="/dashboard/categories"
+          className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+        >
+          <FaLayerGroup className="mr-3" />
+          <span>Categories</span>
+        </Link>
+        <Link
+          href="/dashboard/cards"
+          className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+        >
+          <FaIdCard className="mr-3" />
+          <span>Cards</span>
         </Link>
       </nav>
     </div>
