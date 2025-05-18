@@ -8,6 +8,7 @@ import {
 import { KudosFilters } from "@/presentation/organisms/common/KudosFilters";
 import { FilterOption } from "@/presentation/atoms/common/FilterDropdown";
 import { useKudosCards } from "@/modules/cards/application/hooks/useKudosCards";
+import { KudosCardIcon } from "@/presentation/atoms/common/KudosCardIcon";
 
 interface KudosCardGridProps {
   onCardSelect?: (card: KudosCardType) => void;
@@ -15,6 +16,7 @@ interface KudosCardGridProps {
 
 export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const [expandedCard, setExpandedCard] = useState<KudosCardType | null>(null);
   const [filteredCards, setFilteredCards] = useState<KudosCardType[]>([]);
   const [filters, setFilters] = useState<{
     recipient: FilterOption | null;
@@ -36,10 +38,35 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
 
   const handleCardClick = (card: KudosCardType) => {
     setSelectedCard(card.id);
+    setExpandedCard(card); // Set the expanded card
+    document.body.style.overflow = "hidden"; // Prevent scrolling
+
     if (onCardSelect) {
       onCardSelect(card);
     }
   };
+
+  const handleCloseExpandedCard = () => {
+    setExpandedCard(null);
+    document.body.style.overflow = ""; // Restore scrolling
+  };
+
+  // Handle escape key to close expanded card
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && expandedCard) {
+        handleCloseExpandedCard();
+      }
+    };
+
+    if (expandedCard) {
+      document.addEventListener("keydown", handleEscKey);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [expandedCard]);
 
   const handleFiltersChange = (newFilters: {
     recipient: FilterOption | null;
@@ -88,6 +115,23 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
 
   const getAnimationDelay = (index: number) => {
     return `${index * 0.07}s`;
+  };
+
+  const getIconType = (type: KudosCardType["type"]) => {
+    if (type === "appreciation") return "greatJob"; // Trophy icon
+    if (type === "gratitude") return "support"; // Heart icon
+
+    // Only return types supported by the KudosCardIcon component
+    return type === "thankYou" ||
+      type === "greatJob" ||
+      type === "teamwork" ||
+      type === "support" ||
+      type === "problemSolving" ||
+      type === "guidingLight" ||
+      type === "codeQuality" ||
+      type === "aboveAndBeyond"
+      ? type
+      : "thankYou"; // Default to thankYou if unsupported
   };
 
   const renderCards = () => {
@@ -152,6 +196,89 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {renderCards()}
       </div>
+
+      {/* Expanded Card Modal */}
+      {expandedCard && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+          onClick={() => handleCloseExpandedCard()}
+        >
+          <div
+            id="expanded-card"
+            className="bg-white rounded-lg shadow-2xl max-w-[480px] w-full p-6 animate-in fade-in zoom-in duration-300"
+            style={{
+              boxShadow:
+                "0 10px 25px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.2)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Card Header */}
+            <div className="flex mb-5">
+              <div className="mr-4">
+                <KudosCardIcon
+                  type={getIconType(expandedCard.type)}
+                  size={28}
+                  className="text-blue-600"
+                />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-gray-800">
+                  {expandedCard.title}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {expandedCard.type
+                    .replace(/([A-Z])/g, " $1")
+                    .trim()
+                    .toLowerCase()}
+                </p>
+              </div>
+            </div>
+
+            {/* Card Details */}
+            <div className="space-y-5 mb-4">
+              <div>
+                <div className="text-gray-600 font-medium mb-1.5">
+                  Awarded to
+                </div>
+                <div className="font-semibold text-gray-800 text-base">
+                  {expandedCard.memberName || "Not specified"}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-gray-600 font-medium mb-1.5">
+                  Description
+                </div>
+                <div className="text-gray-800 text-base leading-relaxed">
+                  {expandedCard.description}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-gray-600 font-medium mb-1.5">
+                  Note from Leadership:
+                </div>
+                <div className="text-gray-800 italic text-base">
+                  {expandedCard.leadershipNote || "Not specified"}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2.5 ">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCloseExpandedCard();
+                }}
+                className="bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200 transition-colors w-full text-center"
+              >
+                Close Details
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes fadeInUp {
