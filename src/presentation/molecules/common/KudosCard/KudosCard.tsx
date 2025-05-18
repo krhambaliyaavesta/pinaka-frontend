@@ -304,7 +304,7 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
         
         {/* Title */}
         <h2 
-          className="text-2xl font-bold uppercase tracking-wide text-center mb-4 px-4"
+          className="text-2xl font-bold uppercase tracking-wide text-center mb-4 px-4 break-words"
           style={{ 
             color: colors.textMain,
             textShadow: '0 1px 2px rgba(0,0,0,0.05)'
@@ -314,17 +314,19 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
         </h2>
         
         {/* Description */}
-        <p 
-          className="text-center mb-5 px-8 leading-relaxed"
-          style={{ color: colors.textMain }}
-        >
-          {description}
-        </p>
+        <div className="px-6 w-full">
+          <p 
+            className="text-center mb-5 leading-relaxed break-words line-clamp-3"
+            style={{ color: colors.textMain }}
+          >
+            {description}
+          </p>
+        </div>
         
         {/* Member Name */}
-        <div className="flex-grow flex flex-col justify-center items-center px-6 mb-4">
+        <div className="flex-grow flex flex-col justify-center items-center px-6 mb-4 w-full">
           {memberName && (
-            <div className="text-center bg-white/30 backdrop-blur-sm py-3 px-5 rounded-lg">
+            <div className="text-center bg-white/30 backdrop-blur-sm py-3 px-5 rounded-lg w-full">
               <p 
                 className="text-sm mb-1 font-medium"
                 style={{ color: colors.textMain }}
@@ -332,7 +334,7 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
                 Awarded to
               </p>
               <h3 
-                className="text-xl font-bold"
+                className="text-xl font-bold break-words line-clamp-2"
                 style={{ 
                   color: colors.textMain,
                   textShadow: '0 1px 1px rgba(0,0,0,0.05)'
@@ -346,7 +348,7 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
         
         {/* Bottom Note */}
         <div 
-          className="w-full rounded-b-xl flex items-center justify-center py-6 px-6 mt-auto overflow-visible"
+          className="w-full rounded-b-xl flex items-center justify-center py-6 px-6 mt-auto"
           style={{ 
             background: colors.secondary,
             minHeight: '80px',
@@ -355,7 +357,7 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
           }}
         >
           {leadershipNote ? (
-            <p className="italic text-sm text-center font-medium py-1"
+            <p className="italic text-sm text-center font-medium py-1 break-words line-clamp-3"
                style={{ color: '#FFFFFF' }}>
               "{leadershipNote}"
             </p>
@@ -382,7 +384,7 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
         }
         
         @keyframes circle-connect {
-          0% { 
+          0%, 100% { 
             opacity: 0;
             transform: scale(0.3);
           }
@@ -476,6 +478,25 @@ export function KudosCard({ card, isSelected = false, onClick }: KudosCardProps)
         
         :global(.icon-pulse) {
           animation: icon-pulse 1s ease-in-out infinite;
+        }
+        
+        /* Custom scrollbar styling */
+        :global(*::-webkit-scrollbar) {
+          width: 0;
+          height: 0;
+          display: none;
+        }
+        
+        :global(*::-webkit-scrollbar-track) {
+          background: transparent;
+        }
+        
+        :global(*::-webkit-scrollbar-thumb) {
+          background: transparent;
+        }
+        
+        :global(*::-webkit-scrollbar-thumb:hover) {
+          background: transparent;
         }
       `}</style>
     </div>

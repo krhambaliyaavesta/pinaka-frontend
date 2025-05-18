@@ -2,6 +2,7 @@ import { useState } from "react";
 import { User } from "@/modules/auth/domain/entities/User";
 import { UserApprovalCard } from "@/presentation/organisms/user-management/UserApprovalCard";
 import { FaSearch } from "react-icons/fa";
+import { Loader } from "@/presentation/atoms/common";
 
 export interface PendingUsersListProps {
   users: User[];
@@ -34,12 +35,7 @@ export function PendingUsersList({
 
   const renderContent = () => {
     if (isLoading) {
-      return (
-        <div className="p-8 flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Loading pending users...</p>
-        </div>
-      );
+      return <Loader fullScreen={false} label="Loading pending users..." />;
     }
 
     if (error) {

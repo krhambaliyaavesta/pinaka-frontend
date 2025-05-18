@@ -1,7 +1,8 @@
-import { useState } from "react";
 import { UserRole } from "@/modules/auth/domain/enums";
 import { ActionButton } from "@/presentation/atoms/user-management/ActionButton";
 import { RoleSelector } from "@/presentation/molecules/user-management/RoleSelector";
+import { getRoleName } from "@/presentation/utils";
+import { useState } from "react";
 
 export interface AdminApprovalButtonGroupProps {
   /**
@@ -99,6 +100,18 @@ export function AdminApprovalButtonGroup({
   // Determine if approve button should be disabled
   const approveDisabled = disabled || isRejecting || !selectedRole;
 
+  // Show role selection message when no role selected
+  const getRoleSelectionMessage = () => {
+    if (!selectedRole && !confirmingApprove && !confirmingReject) {
+      return (
+        <p className="text-xs text-gray-500 mt-2 italic">
+          Select a role to enable the approve button
+        </p>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Role selector only shows when not confirming an action */}
@@ -106,29 +119,47 @@ export function AdminApprovalButtonGroup({
         <RoleSelector selectedRole={selectedRole} onRoleChange={onRoleChange} />
       )}
 
-      <div className="flex gap-2">
-        {confirmingApprove || confirmingReject ? (
-          <ActionButton
-            actionType="cancel"
-            onClick={handleCancelClick}
-            className="flex-1"
-            disabled={isApproving || isRejecting || disabled}
-          >
-            Cancel
-          </ActionButton>
-        ) : null}
-
-        {confirmingReject ? (
-          <ActionButton
-            actionType="reject"
-            onClick={handleRejectClick}
-            isLoading={isRejecting}
-            className="flex-1"
-            disabled={isApproving || disabled}
-          >
-            Confirm Reject
-          </ActionButton>
-        ) : confirmingApprove ? (
+      {confirmingApprove || confirmingReject ? (
+        <div className="bg-gray-50 p-3 rounded-md border border-gray-200 mb-3">
+          <p className="text-sm text-gray-700 mb-3">
+            {confirmingApprove 
+              ? `Are you sure you want to approve this user as a ${getRoleName(selectedRole!)}?` 
+              : "Are you sure you want to reject this user's registration?"}
+          </p>
+          <div className="flex gap-3">
+            <ActionButton
+              actionType="cancel"
+              onClick={handleCancelClick}
+              className="flex-1"
+              disabled={isApproving || isRejecting || disabled}
+            >
+              Cancel
+            </ActionButton>
+            {confirmingReject ? (
+              <ActionButton
+                actionType="reject"
+                onClick={handleRejectClick}
+                isLoading={isRejecting}
+                className="flex-1"
+                disabled={isApproving || disabled}
+              >
+                Confirm
+              </ActionButton>
+            ) : (
+              <ActionButton
+                actionType="approve"
+                onClick={handleApproveClick}
+                isLoading={isApproving}
+                className="flex-1"
+                disabled={approveDisabled}
+              >
+                Confirm
+              </ActionButton>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="flex gap-3">
           <ActionButton
             actionType="approve"
             onClick={handleApproveClick}
@@ -136,31 +167,21 @@ export function AdminApprovalButtonGroup({
             className="flex-1"
             disabled={approveDisabled}
           >
-            Confirm Approve
+            Approve
           </ActionButton>
-        ) : (
-          <>
-            <ActionButton
-              actionType="approve"
-              onClick={handleApproveClick}
-              isLoading={isApproving}
-              className="flex-1"
-              disabled={approveDisabled}
-            >
-              Approve
-            </ActionButton>
-            <ActionButton
-              actionType="reject"
-              onClick={handleRejectClick}
-              isLoading={isRejecting}
-              className="flex-1"
-              disabled={isApproving || disabled}
-            >
-              Reject
-            </ActionButton>
-          </>
-        )}
-      </div>
+          <ActionButton
+            actionType="reject"
+            onClick={handleRejectClick}
+            isLoading={isRejecting}
+            className="flex-1"
+            disabled={isApproving || disabled}
+          >
+            Reject
+          </ActionButton>
+        </div>
+      )}
+      
+      {getRoleSelectionMessage()}
     </div>
   );
 }

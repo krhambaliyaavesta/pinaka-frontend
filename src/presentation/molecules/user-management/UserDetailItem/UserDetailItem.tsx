@@ -18,12 +18,12 @@ export function UserDetailItem({
   className = "",
 }: UserDetailItemProps) {
   return (
-    <div className={`mb-3 ${className}`}>
-      <p className="text-sm font-medium text-gray-700 mb-1">{label}</p>
+    <div className={`mb-2 ${className}`}>
+      <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
       <div className="flex items-center">
-        {icon && <span className="mr-2 text-gray-500">{icon}</span>}
-        <p className="text-base text-gray-900 font-normal">
-          {value || <span className="text-gray-400">Not provided</span>}
+        {icon && <span className="mr-2 flex-shrink-0">{icon}</span>}
+        <p className="text-sm text-gray-800 font-medium truncate">
+          {value || <span className="text-gray-400 italic">Not provided</span>}
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner, FaCheck, FaTimes, FaUndo } from "react-icons/fa";
 
 export type ActionType = "approve" | "reject" | "cancel";
 
@@ -24,19 +24,33 @@ export function ActionButton({
   const getButtonStyles = () => {
     switch (actionType) {
       case "approve":
-        return "bg-teal-500 hover:bg-teal-600 text-white";
+        return "bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white border border-teal-600 shadow-sm";
       case "reject":
-        return "bg-red-500 hover:bg-red-600 text-white";
+        return "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border border-red-600 shadow-sm";
       case "cancel":
-        return "bg-gray-200 hover:bg-gray-300 text-gray-800";
+        return "bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm";
       default:
-        return "bg-teal-500 hover:bg-teal-600 text-white";
+        return "bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white border border-teal-600 shadow-sm";
+    }
+  };
+
+  // Get the icon based on action type
+  const getIcon = () => {
+    switch (actionType) {
+      case "approve":
+        return <FaCheck className="h-3 w-3 mr-2" />;
+      case "reject":
+        return <FaTimes className="h-3 w-3 mr-2" />;
+      case "cancel":
+        return <FaUndo className="h-3 w-3 mr-2" />;
+      default:
+        return null;
     }
   };
 
   return (
     <button
-      className={`px-4 py-2 rounded-md font-medium flex items-center justify-center transition-colors duration-200 ${getButtonStyles()} ${
+      className={`px-4 py-2 rounded-md font-medium flex items-center justify-center transition-all duration-200 ${getButtonStyles()} ${
         props.disabled ? "opacity-60 cursor-not-allowed" : ""
       } ${className}`}
       disabled={isLoading || props.disabled}
@@ -45,10 +59,13 @@ export function ActionButton({
       {isLoading ? (
         <>
           <FaSpinner className="animate-spin mr-2 h-4 w-4" />
-          <span>Loading...</span>
+          <span>Processing...</span>
         </>
       ) : (
-        children
+        <>
+          {getIcon()}
+          {children}
+        </>
       )}
     </button>
   );

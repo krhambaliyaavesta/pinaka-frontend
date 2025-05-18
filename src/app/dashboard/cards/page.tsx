@@ -11,6 +11,7 @@ import { FaPlus } from "react-icons/fa";
 import { CardsModule } from "@/modules/cards/CardsModule";
 import { useToast } from "@/modules/toast";
 import { Card } from "@/modules/cards";
+import { Loader } from "@/presentation/atoms/common";
 
 export default function CardsPage() {
   const { user, isLoading } = useAuth();
@@ -160,12 +161,7 @@ export default function CardsPage() {
   };
 
   if (isLoading || cardsLoading || !user) {
-    return (
-      <div className="p-8 flex flex-col items-center justify-center h-64">
-        <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600">Loading cards...</p>
-      </div>
-    );
+    return <Loader label="Loading cards..." />;
   }
 
   if (error) {

@@ -4,7 +4,7 @@ import { UserRole } from "@/modules/auth/domain/enums";
 import { ApprovalBadge } from "@/presentation/atoms/user-management/ApprovalBadge";
 import { UserDetailItem } from "@/presentation/molecules/user-management/UserDetailItem";
 import { AdminApprovalButtonGroup } from "@/presentation/molecules/user-management/AdminApprovalButtonGroup";
-import { MdEmail, MdPerson, MdWork, MdCalendarToday } from "react-icons/md";
+import { MdEmail, MdWork } from "react-icons/md";
 import {
   useApproveUserWithRole,
   useRejectUser,
@@ -37,7 +37,6 @@ export function AdminUserApprovalCard({
   onStatusChange,
   className = "",
 }: AdminUserApprovalCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const { approveUserWithRole, isLoading: isApproving } =
     useApproveUserWithRole();
@@ -73,18 +72,6 @@ export function AdminUserApprovalCard({
     setSelectedRole(role);
   };
 
-  const toggleExpanded = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(date);
-  };
-
   // Helper function to get role name from UserRole enum
   const getRoleName = (role: UserRole): string => {
     switch (role) {
@@ -101,50 +88,33 @@ export function AdminUserApprovalCard({
 
   return (
     <div
-      className={`bg-[#FFFDF5] border border-gray-200 rounded-lg shadow-sm overflow-hidden ${className}`}
+      className={`bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow ${className}`}
     >
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-gray-900">
+      <div className="p-5">
+        <div className="flex justify-between items-start mb-3">
+          <h3 className="text-lg font-semibold text-gray-900 truncate max-w-[70%]">
             {user.fullName}
           </h3>
           <ApprovalBadge status={user.approvalStatus} />
         </div>
 
-        <UserDetailItem label="Email" value={user.email} icon={<MdEmail />} />
-
-        {user.jobTitle && (
-          <UserDetailItem
-            label="Job Title"
-            value={user.jobTitle}
-            icon={<MdWork />}
+        <div className="space-y-2">
+          <UserDetailItem 
+            label="Email" 
+            value={user.email} 
+            icon={<MdEmail className="text-blue-500" />} 
           />
-        )}
 
-        <button
-          className="text-sm text-teal-600 hover:text-teal-800 mt-2 mb-4"
-          onClick={toggleExpanded}
-        >
-          {isExpanded ? "Show less" : "Show more"}
-        </button>
-
-        {isExpanded && (
-          <div className="mt-2 pt-3 border-t border-gray-100">
+          {user.jobTitle && (
             <UserDetailItem
-              label="User ID"
-              value={user.id}
-              icon={<MdPerson />}
+              label="Job Title"
+              value={user.jobTitle}
+              icon={<MdWork className="text-green-500" />}
             />
+          )}
+        </div>
 
-            <UserDetailItem
-              label="Registration Date"
-              value={formatDate(user.createdAt)}
-              icon={<MdCalendarToday />}
-            />
-          </div>
-        )}
-
-        <div className="mt-4">
+        <div className="mt-5 pt-4 border-t border-gray-100">
           <AdminApprovalButtonGroup
             onApprove={handleApprove}
             onReject={handleReject}

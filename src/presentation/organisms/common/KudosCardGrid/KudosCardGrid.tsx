@@ -8,6 +8,9 @@ import {
 import { KudosFilters } from "@/presentation/organisms/common/KudosFilters";
 import { FilterOption } from "@/presentation/atoms/common/FilterDropdown";
 import { useKudosCards } from "@/modules/cards/application/hooks/useKudosCards";
+import { Loader } from "@/presentation/atoms/common";
+import { FiAlertCircle } from "react-icons/fi";
+import { FaRegSadTear } from "react-icons/fa";
 import { KudosCardIcon } from "@/presentation/atoms/common/KudosCardIcon";
 
 interface KudosCardGridProps {
@@ -137,23 +140,30 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
   const renderCards = () => {
     // Show loading state
     if (loading) {
-      return Array(4)
-        .fill(0)
-        .map((_, index) => (
-          <div
-            key={`loading-${index}`}
-            className="bg-gray-100 animate-pulse rounded-xl h-[440px]"
-          />
-        ));
+      return (
+        <div className="w-full max-w-3xl mx-auto border border-gray-200 rounded-lg p-8 bg-white flex justify-center">
+          <Loader fullScreen={false} label="Loading cards..." />
+        </div>
+      );
     }
 
     // Show error state
     if (error) {
       return (
-        <div className="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-8">
-          <p className="text-red-500">
-            Error loading cards. Please try again later.
+        <div className="w-full max-w-3xl mx-auto border border-gray-200 rounded-lg p-8 bg-white flex flex-col items-center justify-center">
+          <div className="text-red-400 mb-4">
+            <FiAlertCircle size={60} />
+          </div>
+          <h3 className="text-xl font-medium text-red-700 mb-2">Failed to load cards</h3>
+          <p className="text-red-500 text-center mb-4">
+            There was a problem loading the cards. Please try again later.
           </p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-red-100 text-red-700 rounded-md transition-colors font-medium hover:bg-red-200"
+          >
+            Retry
+          </button>
         </div>
       );
     }
@@ -161,39 +171,55 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
     // Show empty state
     if (filteredCards.length === 0) {
       return (
-        <div className="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-8">
-          <p className="text-gray-500">No cards match the selected filters.</p>
+        <div className="w-full max-w-3xl mx-auto border border-gray-200 rounded-lg p-8 bg-white flex flex-col items-center justify-center">
+          <div className="text-gray-300 mb-4">
+            <FaRegSadTear size={60} />
+          </div>
+          <h3 className="text-xl font-medium text-gray-700 mb-2">No matching cards found</h3>
+          <p className="text-gray-500 text-center mb-4">
+            Try adjusting your filter criteria or clear filters to see all available cards.
+          </p>
+          <button 
+            onClick={() => handleFiltersChange({ recipient: null, team: null, category: null })}
+            className="px-4 py-2 bg-teal-100 text-teal-700 rounded-md transition-colors font-medium hover:bg-teal-200"
+          >
+            Clear all filters
+          </button>
         </div>
       );
     }
 
     // Show cards
-    return filteredCards.map((card, index) => (
-      <div
-        key={card.id}
-        className="transform transition-all duration-700 ease-out"
-        style={{
-          animationDelay: getAnimationDelay(index),
-          opacity: 0,
-          animation: `fadeInUp 0.7s ease-out ${getAnimationDelay(
-            index
-          )} forwards`,
-        }}
-      >
-        <KudosCard
-          card={card}
-          isSelected={selectedCard === card.id}
-          onClick={() => handleCardClick(card)}
-        />
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {filteredCards.map((card, index) => (
+          <div
+            key={card.id}
+            className="transform transition-all duration-700 ease-out"
+            style={{
+              animationDelay: getAnimationDelay(index),
+              opacity: 0,
+              animation: `fadeInUp 0.7s ease-out ${getAnimationDelay(
+                index
+              )} forwards`,
+            }}
+          >
+            <KudosCard
+              card={card}
+              isSelected={selectedCard === card.id}
+              onClick={() => handleCardClick(card)}
+            />
+          </div>
+        ))}
       </div>
-    ));
+    );
   };
 
   return (
     <div className="w-full space-y-6">
       <KudosFilters onFiltersChange={handleFiltersChange} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="w-full">
         {renderCards()}
       </div>
 

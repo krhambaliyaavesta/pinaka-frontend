@@ -6,6 +6,7 @@ import Header from "@/presentation/organisms/common/Header";
 import Footer from "@/presentation/organisms/common/Footer";
 import { useAuth } from "@/modules/auth";
 import { UserStatus } from "@/modules/auth/domain/enums";
+import { Loader } from "@/presentation/atoms/common";
 
 // Main layout component
 export default function MemberDashboardLayout({
@@ -16,7 +17,7 @@ export default function MemberDashboardLayout({
   const router = useRouter();
   const { user, isLoading, error } = useAuth();
   const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false);
-  const containerWidthClass = "max-w-screen-xl";
+  const containerWidthClass = "w-full max-w-screen-2xl";
 
   // Redirect to login if not authenticated, but only if we've completed loading
   useEffect(() => {
@@ -32,11 +33,7 @@ export default function MemberDashboardLayout({
 
   // Show loading state
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FFFDF5]">
-        <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <Loader />;
   }
 
   // Show a guest view if we're still waiting on auth or user isn't approved
@@ -53,7 +50,7 @@ export default function MemberDashboardLayout({
           <Header userName="Guest" contained={true} />
         </div>
         <main
-          className={`flex-grow ${containerWidthClass} mx-auto px-6 md:px-9 py-6`}
+          className={`flex-grow ${containerWidthClass} !w-full !container mx-auto px-6 md:px-9 py-6`}
         >
           <div className="text-center py-8">
             <h1 className="text-2xl font-bold mb-4">Welcome to Kudos Wall</h1>
