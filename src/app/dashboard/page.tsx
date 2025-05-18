@@ -35,8 +35,12 @@ async function checkAuth() {
 
     const responseData = await response.json();
 
-    // Check for success status and data existence
-    if (responseData.status !== "success" || !responseData.data) {
+    // Check for success status and data existence with correct structure
+    if (
+      responseData.status !== "success" ||
+      !responseData.data ||
+      !responseData.data.id
+    ) {
       redirect("/login");
     }
 
@@ -45,7 +49,7 @@ async function checkAuth() {
   } catch (error) {
     // Error during verification
     console.error("Auth error:", error);
-    // redirect("/login");
+    redirect("/login"); // Always redirect on error
   }
 }
 
