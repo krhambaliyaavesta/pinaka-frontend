@@ -2,20 +2,16 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Header from "@/presentation/organisms/common/Header";
+import { MainNavigation } from "@/presentation/templates/navigation/MainNavigation";
 import Footer from "@/presentation/organisms/common/Footer";
-import { useAuth } from "@/modules/auth";
-import { UserStatus } from "@/modules/auth/domain/enums";
+import { useAuth, useLogout } from "@/modules/auth";
 import { Loader } from "@/presentation/atoms/common";
 
 // Analytics layout component
-export default function AnalyticsLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function AnalyticsLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { user, isLoading, error } = useAuth();
+  const { logout } = useLogout();
   const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false);
   const containerWidthClass = "w-full max-w-screen-2xl";
 
@@ -37,30 +33,15 @@ export default function AnalyticsLayout({
   }
 
   // Show a guest view if we're still waiting on auth or user isn't approved
-  if (!user || user.approvalStatus !== UserStatus.APPROVED) {
+  if (!user) {
     // If we've tried authentication and failed, let middleware handle redirect
     if (hasAttemptedAuth && !user) {
       return null;
     }
 
-    // For non-approved users, show a basic view
-    return (
-      <div className="flex flex-col min-h-screen bg-[#FFFDF5]">
-        <div className="py-4">
-          <Header userName="Guest" contained={true} />
-        </div>
-        <main
-          className={`flex-grow ${containerWidthClass} mx-auto px-6 md:px-9 py-6`}
-        >
-          <div className="text-center py-8">
-            <h1 className="text-2xl font-bold mb-4">Welcome to Analytics Dashboard</h1>
-            <p className="mb-4">Please login to see personalized content.</p>
-          </div>
-          {children}
-        </main>
-        <Footer contained={true} />
-      </div>
-    );
+    // For non-authenticated users, redirect to login
+    router.push("/login");
+    return null;
   }
 
   return (
@@ -71,9 +52,16 @@ export default function AnalyticsLayout({
       <div className="absolute bottom-20 left-1/4 w-8 h-8 bg-[#42B4AC] opacity-40 rounded-md transform rotate-45 -z-10 hidden lg:block"></div>
       <div className="absolute top-1/3 right-12 w-4 h-16 bg-[#42B4AC] opacity-30 rounded-sm transform -rotate-12 -z-10 hidden lg:block"></div>
 
-      <div className="py-4">
-        <Header userName={user.fullName} contained={true} />
-      </div>
+      <MainNavigation
+        user={{
+          fullName: user.fullName,
+          role: user.isAdmin() ? "Admin" : user.isLead() ? "Lead" : "Member",
+          imageUrl: undefined,
+          isAdmin: user.isAdmin(),
+          isLead: user.isLead(),
+        }}
+        onLogout={logout}
+      />
 
       <main
         className={`flex-grow ${containerWidthClass} mx-auto px-6 md:px-9 py-6 relative`}
@@ -84,4 +72,4 @@ export default function AnalyticsLayout({
       <Footer contained={true} />
     </div>
   );
-} 
+}

@@ -17,10 +17,11 @@ async function checkAuth() {
 
   // Verify the auth token with the backend
   try {
-    // Clean up the API URL to remove any trailing % if it exists
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL?.replace(/%$/, "") ||
-      "https://pinaka.onrender.com";
+    // Clean up the API URL to remove any trailing characters properly
+    let apiUrl =
+      process.env.NEXT_PUBLIC_API_URL || "https://pinaka.onrender.com";
+    // Remove any trailing % or / characters
+    apiUrl = apiUrl.replace(/[%/]+$/, "");
 
     const response = await fetch(`${apiUrl}/api/auth/me`, {
       headers: {
@@ -36,7 +37,6 @@ async function checkAuth() {
     }
 
     const responseData = await response.json();
-    console.log("Auth response data:", responseData);
 
     // Check for success status and data existence with correct structure
     if (

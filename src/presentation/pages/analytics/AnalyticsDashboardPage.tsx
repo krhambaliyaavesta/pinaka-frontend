@@ -13,7 +13,7 @@ import { Loader } from "@/presentation/atoms/common";
  * Includes client-side authentication as fallback
  */
 export function AnalyticsDashboardPage({ userData }: { userData?: any }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, error } = useAuth();
   const router = useRouter();
 
   // Client-side auth check as fallback in case server-side auth fails
@@ -25,14 +25,12 @@ export function AnalyticsDashboardPage({ userData }: { userData?: any }) {
     if (!isLoading) {
       // If no user is logged in, redirect to login
       if (!user) {
-        console.log("No user found, redirecting to login");
         router.push("/login");
         return;
       }
 
       // If user is not admin or lead, redirect to home
       if (user.role !== UserRole.ADMIN && user.role !== UserRole.LEAD) {
-        console.log("User not authorized: ", user.role);
         router.push("/");
         return;
       }
@@ -48,13 +46,18 @@ export function AnalyticsDashboardPage({ userData }: { userData?: any }) {
   const effectiveUser = userData || user;
 
   // Final auth check before rendering
+  if (!effectiveUser) {
+    return <Loader label="Authenticating..." />;
+  }
+
+  // Check role again to make sure only admins and leads can access
   if (
-    !effectiveUser ||
-    (effectiveUser.role !== UserRole.ADMIN &&
-      effectiveUser.role !== UserRole.LEAD)
+    effectiveUser.role !== UserRole.ADMIN &&
+    effectiveUser.role !== UserRole.LEAD
   ) {
     // This should rarely happen since we redirect in useEffect
-    return null;
+    router.push("/");
+    return <Loader label="Redirecting..." />;
   }
 
   return <AnalyticsDashboardTemplate userData={effectiveUser} />;
