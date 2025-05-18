@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaUsers, FaTachometerAlt, FaUserFriends, FaLayerGroup, FaIdCard } from "react-icons/fa";
+import { FaUsers, FaTachometerAlt,FaUserFriends, FaLayerGroup, FaIdCard, FaChartBar } from "react-icons/fa";
 import Link from "next/link";
 import { useAuth } from "@/modules/auth";
 import { UserRole } from "@/modules/auth/domain/enums";
@@ -100,6 +100,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           >
             <FaIdCard className="mr-3" />
             <span>Cards</span>
+          </Link>
+
+           <Link  href="/analytics"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+          >
+            <FaChartBar className="mr-3" />
+            <span>Analytics</span>
           </Link>
         </nav>
         
@@ -206,6 +213,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               >
                 <FaIdCard className="mr-3" />
                 <span>Cards</span>
+              </Link>
+              <Link
+                href="/analytics"
+                className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaChartBar className="mr-3" />
+                <span>Analytics</span>
               </Link>
             </nav>
             <div className="mt-5 pt-5 border-t border-gray-200">

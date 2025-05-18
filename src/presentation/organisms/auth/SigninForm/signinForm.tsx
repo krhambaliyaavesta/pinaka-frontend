@@ -41,40 +41,34 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
   const onSubmit: SubmitHandler<SigninFormInputs> = async (data) => {
     try {
       const user = await signin(data.email, data.password);
+
+      // Check if login was successful
       if (user) {
+        // Log successful authentication
         toast.success("Signed in successfully!");
         console.log("User login successful:", user);
 
-        // Check user status first
+        // Verify token exists in storage
+        const tokenExists = window.document.cookie.includes("auth_token=");
+
+        // Check user approval status and redirect accordingly
         if (user.approvalStatus === UserStatus.PENDING) {
           router.push("/waiting-approval");
-          return;
-        }
+        } else if (user.approvalStatus === UserStatus.APPROVED) {
+          // Use a small timeout to ensure cookie is set before redirect
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 100);
+        } else {
+          // Handle rejected or other status
 
-        // Handle role-based routing
-        switch (user.role) {
-          case UserRole.ADMIN:
-            console.log("Admin user detected, redirecting to dashboard");
-            router.push("/dashboard");
-            break;
-          case UserRole.LEAD:
-            console.log("Lead user detected, redirecting to lead dashboard");
-            router.push("/dashboard");
-            break;
-          case UserRole.MEMBER:
-            console.log("Member user detected, redirecting to member dashboard");
-            router.push("/memberDashboard");
-            break;
-          default:
-            console.log("Unknown role, using default dashboard");
-            router.push("/dashboard");
+          router.push("/waiting-approval");
         }
       } else if (error) {
         console.error("Signin failed with error:", error);
         toast.error(error.message || "Sign in failed");
       }
     } catch (err) {
-      console.error("Signin error:", err);
       toast.error("An unexpected error occurred");
     }
   };

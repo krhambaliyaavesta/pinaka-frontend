@@ -40,12 +40,12 @@ export class TokenStorage implements ITokenStorage {
 
     // Ensure cookies work in development environment
     options.path = "/";
-    options.sameSite = "lax"; // Use lax to allow redirects
+    options.sameSite = "lax"; // Use lax to allow redirects from external sites
 
     // Set the cookie
     this.storageService.set(this.TOKEN_KEY, token, options);
 
-    // Manually set a cookie as a fallback
+    // Manually set a cookie as a fallback with more permissive settings
     this.setManualCookie(this.TOKEN_KEY, token, options.maxAge);
   }
 
@@ -101,8 +101,9 @@ export class TokenStorage implements ITokenStorage {
     const expires = new Date();
     expires.setTime(expires.getTime() + maxAge * 1000);
 
-    // Adjust for development environment
+    // Adjust for development environment - use lax SameSite
     const sameSite = "lax";
+    // Only add secure flag if on HTTPS
     const secure = window.location.protocol === "https:" ? "; secure" : "";
 
     document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; samesite=${sameSite}${secure}`;
