@@ -9,7 +9,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSignin } from "@/modules/auth";
 import { useToast } from "@/modules/toast";
 import { useRouter } from "next/navigation";
-import { UserStatus } from "@/modules/auth/domain/enums";
+import { UserRole, UserStatus } from "@/modules/auth/domain/enums";
 
 interface SigninFormProps {
   onSignupClick?: () => void;
@@ -46,6 +46,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
       if (user) {
         // Log successful authentication
         toast.success("Signed in successfully!");
+        console.log("User login successful:", user);
 
         // Verify token exists in storage
         const tokenExists = window.document.cookie.includes("auth_token=");
@@ -64,6 +65,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
           router.push("/waiting-approval");
         }
       } else if (error) {
+        console.error("Signin failed with error:", error);
         toast.error(error.message || "Sign in failed");
       }
     } catch (err) {

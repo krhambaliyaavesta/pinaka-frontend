@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaUsers, FaTachometerAlt, FaChartBar } from "react-icons/fa";
+import { FaUsers, FaTachometerAlt,FaUserFriends, FaLayerGroup, FaIdCard, FaChartBar } from "react-icons/fa";
 import Link from "next/link";
 import { useAuth } from "@/modules/auth";
 import { UserRole } from "@/modules/auth/domain/enums";
@@ -16,21 +16,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, isLoading, error } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Handle authentication
   useEffect(() => {
-    // Don't redirect during loading
     if (isLoading) return;
 
-    // Redirect if not authenticated or not a lead or admin
-    if (
-      !user ||
-      (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)
-    ) {
+    if (!user || (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)) {
+      console.log("User not authorized for dashboard, redirecting to login", user?.role);
       router.push("/login");
     }
   }, [isLoading, user, router]);
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#FFFDF5]">
@@ -39,11 +33,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     );
   }
 
-  // Only render content if user is a lead or admin
   if (!user || (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)) {
     return null;
   }
 
+  const roleTitle = user.role === UserRole.ADMIN ? "Admin" : "Lead";
+  
   const isAdmin = user.role === UserRole.ADMIN;
   const dashboardTitle = isAdmin ? "Admin Dashboard" : "Lead Dashboard";
   const userRoleDisplay = isAdmin ? "Admin" : "Lead";
@@ -54,11 +49,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex min-h-screen bg-[#FFFDF5]">
-      {/* Sidebar - desktop */}
       <div className="hidden md:flex w-64 flex-col bg-white shadow-md">
         <div className="p-5 border-b border-gray-200">
           <h1 className="text-xl font-bold text-teal-600">{dashboardTitle}</h1>
         </div>
+        <div className="p-5 border-t border-gray-200">
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white font-semibold">
+              {user.fullName.charAt(0)}
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium">{user.fullName}</p>
+              <p className="text-xs text-gray-500">{roleTitle}</p>
+            </div>
+          </div>
+        </div>
+        <hr className="border-t border-gray-200" />
         <nav className="flex-1 p-5 space-y-1">
           <Link
             href="/dashboard"
@@ -75,7 +81,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <span>User Approvals</span>
           </Link>
           <Link
-            href="/analytics"
+            href="/dashboard/teams"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+          >
+            <FaUserFriends className="mr-3" />
+            <span>Teams</span>
+          </Link>
+          <Link
+            href="/dashboard/categories"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+          >
+            <FaLayerGroup className="mr-3" />
+            <span>Categories</span>
+          </Link>
+          <Link
+            href="/dashboard/cards"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+          >
+            <FaIdCard className="mr-3" />
+            <span>Cards</span>
+          </Link>
+
+           <Link  href="/analytics"
             className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
           >
             <FaChartBar className="mr-3" />
@@ -89,17 +116,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <span>Kudos Wall</span>
           </Link>
         </nav>
-        <div className="p-5 border-t border-gray-200">
-          <div className="flex items-center">
-            <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white font-semibold">
-              {user.fullName.charAt(0)}
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium">{user.fullName}</p>
-              <p className="text-xs text-gray-500">{userRoleDisplay}</p>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       {/* Mobile header */}
@@ -181,6 +198,30 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <span>User Approvals</span>
               </Link>
               <Link
+                href="/dashboard/teams"
+                className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaUserFriends className="mr-3" />
+                <span>Teams</span>
+              </Link>
+              <Link
+                href="/dashboard/categories"
+                className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaLayerGroup className="mr-3" />
+                <span>Categories</span>
+              </Link>
+              <Link
+                href="/dashboard/cards"
+                className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaIdCard className="mr-3" />
+                <span>Cards</span>
+              </Link>
+              <Link
                 href="/analytics"
                 className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -213,8 +254,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       )}
 
       {/* Main content */}
-      <div className="flex-1 md:ml-64 pt-4 md:pt-0">
-        <main className="px-4 py-16 md:py-6">{children}</main>
+      <div className="flex-1 md:px-6 pt-4 md:pt-0">
+        <main className="pl-0 pr-2 py-12 md:py-4">{children}</main>
       </div>
     </div>
   );
