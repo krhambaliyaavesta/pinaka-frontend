@@ -45,7 +45,7 @@ export class AnalyticsRepository implements IAnalyticsRepository {
 
       const response = await this.httpClient.get<
         AnalyticsResponse<TopRecipient>
-      >(`/api/kudos-cards/analytics/top-recipients`, { params: queryParams });
+      >(`/api/analytics/top-recipients`, { params: queryParams });
 
       return response.data || [];
     } catch (error) {
@@ -67,7 +67,7 @@ export class AnalyticsRepository implements IAnalyticsRepository {
       };
 
       const response = await this.httpClient.get<AnalyticsResponse<TopTeam>>(
-        `/api/kudos-cards/analytics/top-teams`,
+        `/api/analytics/top-teams`,
         { params: queryParams }
       );
 
@@ -94,7 +94,7 @@ export class AnalyticsRepository implements IAnalyticsRepository {
 
       const response = await this.httpClient.get<
         AnalyticsResponse<TrendingCategory>
-      >(`/api/kudos-cards/analytics/trending-categories`, {
+      >(`/api/analytics/trending-categories`, {
         params: queryParams,
       });
 
@@ -121,7 +121,7 @@ export class AnalyticsRepository implements IAnalyticsRepository {
 
       const response = await this.httpClient.get<
         AnalyticsResponse<TrendingKeyword>
-      >(`/api/kudos-cards/analytics/trending-keywords`, {
+      >(`/api/analytics/trending-keywords`, {
         params: queryParams,
       });
 
