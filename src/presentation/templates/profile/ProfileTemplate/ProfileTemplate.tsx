@@ -1,7 +1,6 @@
 "use client";
 
 import { User } from "@/modules/auth/domain/entities/User";
-import { useEffect, useState } from "react";
 import { ProfileForm } from "@/presentation/organisms/profile/ProfileForm";
 import { UpdateUserData } from "@/modules/user-management/domain/interfaces/IUserManagementRepository";
 
