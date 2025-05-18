@@ -72,9 +72,12 @@ export class CardsModule {
   }
 
   /**
-   * Logs an error with module-specific context
+   * Log an error with context to identify where it occurred
+   * @param error The error to log
+   * @param context Where the error occurred
    */
   static logError(error: unknown, context: string): void {
-    console.error(`Cards Module - ${context}:`, error);
+    console.error(`[Cards Module Error] ${context}:`, error);
+    // In a production app, you might send this to an error tracking service
   }
-} 
+}

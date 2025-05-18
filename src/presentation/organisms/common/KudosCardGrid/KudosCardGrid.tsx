@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   KudosCard,
   KudosCardType,
 } from "@/presentation/molecules/common/KudosCard/KudosCard";
-import { kudosCards } from "@/presentation/pinaka.constant";
 import { KudosFilters } from "@/presentation/organisms/common/KudosFilters";
 import { FilterOption } from "@/presentation/atoms/common/FilterDropdown";
+import { useKudosCards } from "@/modules/cards/application/hooks/useKudosCards";
 
 interface KudosCardGridProps {
   onCardSelect?: (card: KudosCardType) => void;
@@ -15,7 +15,6 @@ interface KudosCardGridProps {
 
 export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
-  const [cards, setCards] = useState<KudosCardType[]>([]);
   const [filteredCards, setFilteredCards] = useState<KudosCardType[]>([]);
   const [filters, setFilters] = useState<{
     recipient: FilterOption | null;
@@ -27,13 +26,10 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
     category: null,
   });
 
-  // Initialize cards from constants
-  useEffect(() => {
-    setCards(kudosCards);
-    setFilteredCards(kudosCards);
-  }, []);
+  // Fetch cards from API
+  const { cards, loading, error } = useKudosCards();
 
-  // Apply filters when they change
+  // Apply filters when they change or when cards load
   useEffect(() => {
     filterCards();
   }, [filters, cards]);
@@ -58,8 +54,8 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
 
     // Filter by recipient
     if (filters.recipient) {
-      result = result.filter(card => 
-        card.memberName === filters.recipient?.name
+      result = result.filter(
+        (card) => card.memberName === filters.recipient?.name
       );
     }
 
@@ -68,23 +64,23 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
     if (filters.team && filters.team.name) {
       // This is a mock implementation, in a real app you would filter by actual team
       const teamFilterMap: Record<string, string[]> = {
-        'Engineering': ['Emma Garcia', 'Michael Chen'],
-        'Product': ['James Taylor', 'Sarah Johnson'],
-        'Design': ['Alex Rodriguez'],
-        'Marketing': ['Priya Sharma'],
-        'Customer Support': ['David Wilson'],
+        Engineering: ["Emma Garcia", "Michael Chen"],
+        Product: ["James Taylor", "Sarah Johnson"],
+        Design: ["Alex Rodriguez"],
+        Marketing: ["Priya Sharma"],
+        "Customer Support": ["David Wilson"],
       };
-      
+
       const teamName = filters.team.name;
       const teamMembers = teamFilterMap[teamName] || [];
-      result = result.filter(card => 
-        card.memberName && teamMembers.includes(card.memberName)
+      result = result.filter(
+        (card) => card.memberName && teamMembers.includes(card.memberName)
       );
     }
 
     // Filter by category (card type)
     if (filters.category) {
-      result = result.filter(card => card.type === filters.category?.id);
+      result = result.filter((card) => card.type === filters.category?.id);
     }
 
     setFilteredCards(result);
@@ -95,12 +91,39 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
   };
 
   const renderCards = () => {
-    if (filteredCards.length === 0) return (
-      <div className="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-8">
-        <p className="text-gray-500">No cards match the selected filters.</p>
-      </div>
-    );
+    // Show loading state
+    if (loading) {
+      return Array(4)
+        .fill(0)
+        .map((_, index) => (
+          <div
+            key={`loading-${index}`}
+            className="bg-gray-100 animate-pulse rounded-xl h-[440px]"
+          />
+        ));
+    }
 
+    // Show error state
+    if (error) {
+      return (
+        <div className="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-8">
+          <p className="text-red-500">
+            Error loading cards. Please try again later.
+          </p>
+        </div>
+      );
+    }
+
+    // Show empty state
+    if (filteredCards.length === 0) {
+      return (
+        <div className="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-8">
+          <p className="text-gray-500">No cards match the selected filters.</p>
+        </div>
+      );
+    }
+
+    // Show cards
     return filteredCards.map((card, index) => (
       <div
         key={card.id}
@@ -125,7 +148,7 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
   return (
     <div className="w-full space-y-6">
       <KudosFilters onFiltersChange={handleFiltersChange} />
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {renderCards()}
       </div>

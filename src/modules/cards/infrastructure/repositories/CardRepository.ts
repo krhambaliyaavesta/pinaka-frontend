@@ -17,23 +17,49 @@ export class CardRepository implements ICardRepository {
 
   async getCards(): Promise<Card[]> {
     try {
-      const response = await this.httpClient.get<any>('/api/kudos-cards');
-      
-      return response.data.map((card: any) => new Card(
-        card.id,
-        card.recipientName,
-        card.teamId,
-        card.teamName,
-        card.categoryId,
-        card.categoryName,
-        card.message,
-        card.createdBy,
-        card.creatorName,
-        card.createdAt,
-        card.updatedAt
-      ));
+      // This expects the API to return { status: 'success', data: [...] }
+      const response = await this.httpClient.get<{
+        status: string;
+        results: number;
+        data: Array<{
+          id: string;
+          recipientName: string;
+          teamId: number;
+          teamName: string;
+          categoryId: number;
+          categoryName: string;
+          message: string;
+          createdBy: string;
+          creatorName: string;
+          createdAt: string;
+          updatedAt: string;
+        }>;
+      }>("/api/kudos-cards");
+
+      // Check for success status
+      if (response.status !== "success" || !response.data) {
+        throw new Error("Invalid API response structure");
+      }
+
+      // Map the data to Card entities
+      return response.data.map(
+        (card) =>
+          new Card(
+            card.id,
+            card.recipientName,
+            card.teamId,
+            card.teamName,
+            card.categoryId,
+            card.categoryName,
+            card.message,
+            card.createdBy,
+            card.creatorName,
+            card.createdAt,
+            card.updatedAt
+          )
+      );
     } catch (error) {
-      console.error('Error fetching cards:', error);
+      console.error("Error fetching cards:", error);
       throw error;
     }
   }
@@ -42,7 +68,7 @@ export class CardRepository implements ICardRepository {
     try {
       const response = await this.httpClient.get<any>(`/api/kudos-cards/${id}`);
       const card = response.data;
-      
+
       return new Card(
         card.id,
         card.recipientName,
@@ -69,9 +95,12 @@ export class CardRepository implements ICardRepository {
     message: string;
   }): Promise<Card> {
     try {
-      const response = await this.httpClient.post<any>('/api/kudos-cards', card);
+      const response = await this.httpClient.post<any>(
+        "/api/kudos-cards",
+        card
+      );
       const createdCard = response.data;
-      
+
       return new Card(
         createdCard.id,
         createdCard.recipientName,
@@ -86,21 +115,27 @@ export class CardRepository implements ICardRepository {
         createdCard.updatedAt
       );
     } catch (error) {
-      console.error('Error creating card:', error);
+      console.error("Error creating card:", error);
       throw error;
     }
   }
 
-  async updateCard(id: string, card: {
-    recipientName?: string;
-    teamId?: number;
-    categoryId?: number;
-    message?: string;
-  }): Promise<Card> {
+  async updateCard(
+    id: string,
+    card: {
+      recipientName?: string;
+      teamId?: number;
+      categoryId?: number;
+      message?: string;
+    }
+  ): Promise<Card> {
     try {
-      const response = await this.httpClient.put<any>(`/api/kudos-cards/${id}`, card);
+      const response = await this.httpClient.put<any>(
+        `/api/kudos-cards/${id}`,
+        card
+      );
       const updatedCard = response.data;
-      
+
       return new Card(
         updatedCard.id,
         updatedCard.recipientName,
@@ -128,4 +163,4 @@ export class CardRepository implements ICardRepository {
       throw error;
     }
   }
-} 
+}
