@@ -134,7 +134,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
           {renderPasswordVisibility()}
         </div>
 
-        <div className="flex items-center justify-end mb-2">
+        {/* <div className="flex items-center justify-end mb-2">
           <div className="text-sm">
             <a
               href="/forgot-password"
@@ -143,7 +143,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
               Forgot Password?
             </a>
           </div>
-        </div>
+        </div> */}
 
         <Button
           fullWidth
