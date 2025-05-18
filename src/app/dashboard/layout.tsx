@@ -2,7 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaUsers, FaTachometerAlt,FaUserFriends, FaLayerGroup, FaIdCard, FaChartBar } from "react-icons/fa";
+import {
+  FaUsers,
+  FaTachometerAlt,
+  FaUserFriends,
+  FaLayerGroup,
+  FaIdCard,
+  FaChartBar,
+  FaUserEdit,
+} from "react-icons/fa";
 import Link from "next/link";
 import { useAuth } from "@/modules/auth";
 import { UserRole } from "@/modules/auth/domain/enums";
@@ -20,8 +28,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   useEffect(() => {
     if (isLoading) return;
 
-    if (!user || (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)) {
-      console.log("User not authorized for dashboard, redirecting to login", user?.role);
+    if (
+      !user ||
+      (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)
+    ) {
+      console.log(
+        "User not authorized for dashboard, redirecting to login",
+        user?.role
+      );
       router.push("/login");
     }
   }, [isLoading, user, router]);
@@ -35,7 +49,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   const roleTitle = user.role === UserRole.ADMIN ? "Admin" : "Lead";
-  
+
   const isAdmin = user.role === UserRole.ADMIN;
   const dashboardTitle = isAdmin ? "Admin Dashboard" : "Lead Dashboard";
   const userRoleDisplay = isAdmin ? "Admin" : "Lead";
@@ -78,6 +92,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <span>User Approvals</span>
           </Link>
           <Link
+            href="/dashboard/edit-users"
+            className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+          >
+            <FaUserEdit className="mr-3" />
+            <span>Edit Users</span>
+          </Link>
+          <Link
             href="/dashboard/teams"
             className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
           >
@@ -99,7 +120,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <span>Cards</span>
           </Link>
 
-           <Link  href="/analytics"
+          <Link
+            href="/analytics"
             className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
           >
             <FaChartBar className="mr-3" />
@@ -113,7 +135,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <span>Kudos Wall</span>
           </Link>
         </nav>
-        
       </div>
 
       {/* Mobile header */}
@@ -193,6 +214,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               >
                 <FaUsers className="mr-3" />
                 <span>User Approvals</span>
+              </Link>
+              <Link
+                href="/dashboard/edit-users"
+                className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaUserEdit className="mr-3" />
+                <span>Edit Users</span>
               </Link>
               <Link
                 href="/dashboard/teams"

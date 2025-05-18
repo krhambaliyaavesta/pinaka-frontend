@@ -3,7 +3,9 @@ import { UserRole, UserStatus } from "@/modules/auth/domain/enums";
 import {
   IUserManagementRepository,
   IUserManagementService,
+  UpdateUserData,
 } from "../../domain/interfaces";
+import { UserSearchParams, UserSearchResult } from "../../domain/types";
 
 /**
  * Implementation of the IUserManagementService interface
@@ -73,6 +75,35 @@ export class UserManagementService implements IUserManagementService {
         "UserManagementService: Approve user with role error",
         error
       );
+      throw error;
+    }
+  }
+
+  /**
+   * Searches for users with filtering and pagination
+   * @param params Search parameters including search term, filters, and pagination
+   * @returns Promise resolving to search results containing users and total count
+   */
+  async searchUsers(params: UserSearchParams): Promise<UserSearchResult> {
+    try {
+      return await this.repository.searchUsers(params);
+    } catch (error) {
+      console.error("UserManagementService: Search users error", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Updates a user's details
+   * @param userId The ID of the user to update
+   * @param data The new user data
+   * @returns Promise resolving to the updated user
+   */
+  async updateUser(userId: string, data: UpdateUserData): Promise<User> {
+    try {
+      return await this.repository.updateUser(userId, data);
+    } catch (error) {
+      console.error("UserManagementService: Update user error", error);
       throw error;
     }
   }

@@ -2,8 +2,12 @@ import { HttpClient } from "@/core/infrastructure/http";
 import { HttpClientProvider } from "@/core/infrastructure/di/HttpClientProvider";
 import { User } from "@/modules/auth/domain/entities/User";
 import { UserRole, UserStatus } from "@/modules/auth/domain/enums";
-import { IUserManagementRepository } from "../../domain/interfaces";
+import {
+  IUserManagementRepository,
+  UpdateUserData,
+} from "../../domain/interfaces";
 import { NetworkError } from "@/core/infrastructure/http";
+import { UserSearchParams, UserSearchResult } from "../../domain/types";
 
 // Define response types
 interface ApiResponse<T> {
@@ -30,7 +34,13 @@ interface PendingUsersResponseData {
   total: number;
 }
 
+interface SearchUsersResponseData {
+  users: UserDTO[];
+  total: number;
+}
+
 type GetPendingUsersResponse = ApiResponse<PendingUsersResponseData>;
+type SearchUsersResponse = ApiResponse<SearchUsersResponseData>;
 type UpdateUserStatusResponse = ApiResponse<UserDTO>;
 
 /**
@@ -219,5 +229,89 @@ export class UserManagementRepository implements IUserManagementRepository {
       approvalStatus,
       new Date(data.createdAt)
     );
+  }
+
+  /**
+   * Searches for users with filtering and pagination
+   * @param params Search parameters including search term, filters, and pagination
+   * @returns Promise resolving to search results containing users and total count
+   */
+  async searchUsers(params: UserSearchParams): Promise<UserSearchResult> {
+    try {
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+
+      if (params.search) {
+        queryParams.append("search", params.search);
+      }
+
+      if (params.approvalStatus) {
+        queryParams.append("approvalStatus", params.approvalStatus.toString());
+      }
+
+      queryParams.append("limit", params.limit.toString());
+      queryParams.append("offset", params.offset.toString());
+
+      // Make the API call
+      const url = `/api/admin/users?${queryParams.toString()}`;
+      const response = await this.httpClient.get<SearchUsersResponse>(url);
+
+      if (response.status !== "success" || !response.data) {
+        console.error("Invalid response:", response);
+        throw new Error("Invalid response from server");
+      }
+
+      // Extract users and total from the response
+      const { users, total } = response.data;
+
+      if (!Array.isArray(users)) {
+        throw new Error("Invalid response format from server");
+      }
+
+      // Map DTO objects to domain entities
+      const mappedUsers = users.map((userDTO) => this.mapToUser(userDTO));
+
+      return {
+        users: mappedUsers,
+        total,
+      };
+    } catch (error) {
+      console.error("UserManagementRepository: Search users error", error);
+
+      if (error instanceof NetworkError) {
+        throw new Error("Network error during user search");
+      }
+
+      throw new Error("Failed to search users");
+    }
+  }
+
+  /**
+   * Updates a user's details through the API
+   * @param userId The ID of the user to update
+   * @param data The new user data
+   * @returns Promise resolving to the updated User
+   */
+  async updateUser(userId: string, data: UpdateUserData): Promise<User> {
+    try {
+      const response = await this.httpClient.put<UpdateUserStatusResponse>(
+        `/api/admin/users/${userId}`,
+        data
+      );
+
+      if (response.status !== "success" || !response.data) {
+        throw new Error("Invalid response from server");
+      }
+
+      return this.mapToUser(response.data);
+    } catch (error) {
+      console.error("UserManagementRepository: Update user error", error);
+
+      if (error instanceof NetworkError) {
+        throw new Error("Network error during user update");
+      }
+
+      throw new Error("Failed to update user");
+    }
   }
 }

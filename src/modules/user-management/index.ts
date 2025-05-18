@@ -10,6 +10,8 @@ export {
   useApproveUser,
   useRejectUser,
   useApproveUserWithRole,
+  useSearchUsers,
+  useUpdateUser,
 } from "./application/hooks";
 
 // Hooks will be exported here in later phases

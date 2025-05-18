@@ -9,6 +9,8 @@ import {
   ApproveUserUseCase,
   RejectUserUseCase,
   ApproveUserWithRoleUseCase,
+  SearchUsersUseCase,
+  UpdateUserUseCase,
 } from "./application";
 
 /**
@@ -69,6 +71,22 @@ export class UserManagementModule {
    */
   static getApproveUserWithRoleUseCase(): ApproveUserWithRoleUseCase {
     return new ApproveUserWithRoleUseCase(this.getService());
+  }
+
+  /**
+   * Create a new SearchUsersUseCase instance
+   * @returns A new SearchUsersUseCase instance
+   */
+  static getSearchUsersUseCase(): SearchUsersUseCase {
+    return new SearchUsersUseCase(this.getService());
+  }
+
+  /**
+   * Create a new UpdateUserUseCase instance
+   * @returns A new UpdateUserUseCase instance
+   */
+  static getUpdateUserUseCase(): UpdateUserUseCase {
+    return new UpdateUserUseCase(this.getService());
   }
 
   /**
