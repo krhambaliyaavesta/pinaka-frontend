@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { AnalyticsDashboardPage } from "@/presentation/pages/analytics";
 
 /**
  * Server-side authentication check for the analytics page
@@ -48,31 +49,13 @@ async function checkAuth() {
 }
 
 /**
- * Analytics Page
- * Displays analytics dashboard with various visualizations
- * Only accessible to authenticated users
+ * Analytics Page (App Router)
+ * Server component that handles authentication and then renders the client-side analytics page
  */
 export default async function AnalyticsPage() {
   // Check auth before rendering the page
   const user = await checkAuth();
 
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
-        Analytics Dashboard
-      </h1>
-
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <p className="text-gray-600 mb-4">
-          Welcome to the Analytics Dashboard, {user.name || user.email}.
-        </p>
-
-        <div className="bg-teal-50 p-4 rounded-md border border-teal-100">
-          <p className="text-teal-800">
-            This page demonstrates server-side authentication.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  // Use the client component from the presentation layer
+  return <AnalyticsDashboardPage userData={user} />;
 }
