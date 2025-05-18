@@ -171,7 +171,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
         <Button
           fullWidth
           size="lg"
-          className="bg-blue-500 hover:bg-blue-600 text-white mt-4 rounded-full"
+          variant="primary"
           type="submit"
           disabled={isLoading}
           isLoading={isLoading}
@@ -185,7 +185,7 @@ export const SignupForm: FC<SignupFormProps> = ({ onLoginClick }) => {
           Already have an account?{" "}
           <button
             onClick={onLoginClick}
-            className="font-medium text-teal-500 hover:text-teal-600 cursor-pointer"
+            className="font-medium text-[#42B4AC] hover:text-teal-700 cursor-pointer"
           >
             Login now
           </button>

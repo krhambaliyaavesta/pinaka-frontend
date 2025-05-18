@@ -46,7 +46,7 @@ export function KudosFilters({ onFiltersChange }: KudosFiltersProps) {
   };
 
   return (
-    <div className="w-full bg-white p-4 rounded-lg shadow-sm">
+      <div className="w-full bg-white p-4 rounded-lg shadow-sm">
       <h3 className="text-lg font-medium text-gray-800 mb-4">Filter Kudos</h3>
       <FiltersGroup
         recipientOptions={recipientOptions}

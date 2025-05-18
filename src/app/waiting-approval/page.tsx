@@ -7,6 +7,7 @@ import { useToast } from "@/modules/toast";
 import { HiClock } from "react-icons/hi";
 import { useEffect } from "react";
 import { UserStatus } from "@/modules/auth/domain/enums";
+import { Loader } from "@/presentation/atoms/common";
 
 export default function WaitingApprovalPage() {
   const router = useRouter();
@@ -44,12 +45,7 @@ export default function WaitingApprovalPage() {
 
   // Show loading state while checking auth
   if (authLoading) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
-        <p className="mt-4 text-gray-600">Checking account status...</p>
-      </div>
-    );
+    return <Loader label="Checking account status..." />;
   }
 
   // Only render the page content if user exists and is not approved

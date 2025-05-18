@@ -31,9 +31,6 @@ export function KudosCardsSection({
       </div>
 
       <div className="relative">
-        <div className="absolute -top-8 -left-8 w-24 h-24 bg-[#42B4AC]/10 rounded-full blur-xl -z-10"></div>
-        <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-[#42B4AC]/10 rounded-full blur-xl -z-10"></div>
-
         <KudosCardGrid onCardSelect={handleCardSelect} />
       </div>
     </div>

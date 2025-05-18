@@ -137,8 +137,8 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
         <div className="flex items-center justify-end mb-2">
           <div className="text-sm">
             <a
-              href="#"
-              className="font-medium text-gray-500 hover:text-gray-700"
+              href="/forgot-password"
+              className="font-medium text-[#42B4AC] hover:text-teal-700"
             >
               Forgot Password?
             </a>
@@ -148,7 +148,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
         <Button
           fullWidth
           size="lg"
-          className="bg-blue-500 hover:bg-blue-600 text-white mt-4 rounded-full"
+          variant="primary"
           type="submit"
           disabled={isLoading}
           isLoading={isLoading}
@@ -162,7 +162,7 @@ export const SigninForm: FC<SigninFormProps> = ({ onSignupClick }) => {
           Don't have an account?{" "}
           <button
             onClick={onSignupClick}
-            className="font-medium text-teal-500 hover:text-teal-600 cursor-pointer"
+            className="font-medium text-[#42B4AC] hover:text-teal-700 cursor-pointer"
           >
             Sign up now
           </button>

@@ -11,6 +11,7 @@ import { FaPlus } from "react-icons/fa";
 import { CategoriesModule } from "@/modules/categories/CategoriesModule";
 import { useToast } from "@/modules/toast";
 import { Category } from "@/modules/categories";
+import { Loader } from "@/presentation/atoms/common";
 
 export default function CategoriesPage() {
   const { user, isLoading } = useAuth();
@@ -155,12 +156,7 @@ export default function CategoriesPage() {
   };
 
   if (isLoading || categoriesLoading || !user) {
-    return (
-      <div className="p-8 flex flex-col items-center justify-center h-64">
-        <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600">Loading categories...</p>
-      </div>
-    );
+    return <Loader label="Loading categories..." />;
   }
 
   if (error) {

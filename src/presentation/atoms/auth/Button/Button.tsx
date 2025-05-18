@@ -19,9 +19,9 @@ export const Button: FC<ButtonProps> = ({
   ...props
 }) => {
   const variantClasses = {
-    primary: 'bg-teal-500 hover:bg-teal-600 text-white',
+    primary: 'bg-[#42B4AC] hover:bg-teal-600 text-white',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
-    outline: 'border border-teal-500 text-teal-500 hover:bg-teal-50'
+    outline: 'border border-[#42B4AC] text-[#42B4AC] hover:bg-teal-50'
   };
 
   const sizeClasses = {
@@ -33,7 +33,7 @@ export const Button: FC<ButtonProps> = ({
   return (
     <button
       disabled={disabled || isLoading}
-      className={`font-medium rounded-md transition-colors duration-200 
+      className={`font-medium rounded-full transition-colors duration-200 
       ${variantClasses[variant]} 
       ${sizeClasses[size]} 
       ${fullWidth ? 'w-full' : ''} 

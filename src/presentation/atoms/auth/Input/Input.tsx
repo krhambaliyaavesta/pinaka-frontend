@@ -24,7 +24,7 @@ export const Input: FC<InputProps> = ({
       )}
       <input
         id={id}
-        className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 ${className}`}
+        className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#42B4AC] ${className}`}
         {...props}
       />
       {error && (

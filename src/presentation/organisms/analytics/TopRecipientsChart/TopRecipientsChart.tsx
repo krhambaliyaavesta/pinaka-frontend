@@ -10,6 +10,9 @@ import {
   ViewToggle,
   ViewType,
 } from "@/presentation/atoms/analytics/ViewToggle";
+import { Loader } from "@/presentation/atoms/common";
+import { FaChartBar } from "react-icons/fa";
+import { BiBarChartAlt2, BiPieChart } from "react-icons/bi";
 
 interface TopRecipientsChartProps {
   /**
@@ -34,45 +37,12 @@ export const TopRecipientsChart: React.FC<TopRecipientsChartProps> = ({
     {
       label: "Bar Chart",
       value: "bar" as ViewType,
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 22h16"></path>
-          <path d="M4 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"></path>
-          <path d="M8 22v-4"></path>
-          <path d="M12 22v-10"></path>
-          <path d="M16 22v-6"></path>
-        </svg>
-      ),
+      icon: <BiBarChartAlt2 size={20} />,
     },
     {
       label: "Pie Chart",
       value: "pie" as ViewType,
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-        </svg>
-      ),
+      icon: <BiPieChart size={20} />,
     },
   ];
 
@@ -157,12 +127,16 @@ export const TopRecipientsChart: React.FC<TopRecipientsChartProps> = ({
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+        <div className="h-64">
+          <Loader fullScreen={false} />
         </div>
       ) : data.length === 0 ? (
-        <div className="flex justify-center items-center h-64 text-gray-500">
-          No data available
+        <div className="flex flex-col items-center justify-center h-64 bg-[#FFFDF5] border border-gray-200 rounded-lg p-6">
+          <FaChartBar className="h-12 w-12 text-gray-300 mb-3" />
+          <h3 className="text-lg font-semibold text-gray-700 mb-1">No data available</h3>
+          <p className="text-gray-500 text-center text-sm">
+            Try changing the time period or check back later.
+          </p>
         </div>
       ) : viewType === "bar" ? (
         <HorizontalBarChart

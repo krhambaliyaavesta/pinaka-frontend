@@ -11,6 +11,7 @@ import { FaPlus } from "react-icons/fa";
 import { TeamsModule } from "@/modules/teams/TeamsModule";
 import { useToast } from "@/modules/toast";
 import { Team } from "@/modules/teams";
+import { Loader } from "@/presentation/atoms/common";
 
 export default function TeamsPage() {
   const { user, isLoading } = useAuth();
@@ -155,12 +156,7 @@ export default function TeamsPage() {
   };
 
   if (isLoading || teamsLoading || !user) {
-    return (
-      <div className="p-8 flex flex-col items-center justify-center h-64">
-        <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600">Loading teams...</p>
-      </div>
-    );
+    return <Loader label="Loading teams..." />;
   }
 
   if (error) {

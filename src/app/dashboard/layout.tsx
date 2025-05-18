@@ -6,6 +6,7 @@ import { FaUsers, FaTachometerAlt,FaUserFriends, FaLayerGroup, FaIdCard, FaChart
 import Link from "next/link";
 import { useAuth } from "@/modules/auth";
 import { UserRole } from "@/modules/auth/domain/enums";
+import { Loader } from "@/presentation/atoms/common";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -26,11 +27,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [isLoading, user, router]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FFFDF5]">
-        <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <Loader size="16" />;
   }
 
   if (!user || (user.role !== UserRole.LEAD && user.role !== UserRole.ADMIN)) {
@@ -51,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="flex min-h-screen bg-[#FFFDF5]">
       <div className="hidden md:flex w-64 flex-col bg-white shadow-md">
         <div className="p-5 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-teal-600">{dashboardTitle}</h1>
+          <h1 className="text-xl font-bold text-teal-500">{dashboardTitle}</h1>
         </div>
         <div className="p-5 border-t border-gray-200">
           <div className="flex items-center">
