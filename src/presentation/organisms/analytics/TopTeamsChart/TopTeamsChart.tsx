@@ -19,6 +19,14 @@ interface TopTeamsChartProps {
    * Additional CSS classes
    */
   className?: string;
+  /**
+   * Hide the chart title
+   */
+  hideTitle?: boolean;
+  /**
+   * Use colorful chart theme instead of monochrome
+   */
+  useColorfulCharts?: boolean;
 }
 
 /**
@@ -27,6 +35,8 @@ interface TopTeamsChartProps {
  */
 export const TopTeamsChart: React.FC<TopTeamsChartProps> = ({
   className = "",
+  hideTitle = false,
+  useColorfulCharts = false,
 }) => {
   // Available limit options
   const limitOptions = [5, 10, 20];
@@ -62,26 +72,23 @@ export const TopTeamsChart: React.FC<TopTeamsChartProps> = ({
   });
 
   // Transform data for the chart
-  const chartData = data.map((team: TopTeam) => ({
+  const chartData = data.map((team: TopTeam, index) => ({
     name: team.teamName,
     value: team.count,
+    color: useColorfulCharts 
+      ? ["#FFB74D", "#FF8A80", "#FFCC80", "#81C784", "#66B2FF", "#80DEEA", "#B388FF", "#4FC3F7"][index % 8]
+      : undefined
   }));
 
-  // Use a slightly different shade of teal for variety
-  const pieColors = [
-    "#42B4AC", // Primary teal
-    "#4AC2BA", // Light teal
-    "#5BD3C9", // Lighter teal
-    "#6DDDD3", // Even lighter teal
-    "#85E5DC", // Very light teal
-    "#A5EDE7", // Ultra light teal
-  ];
+  // Colors for the pie chart
+  const pieColors = useColorfulCharts 
+    ? ["#FFB74D", "#FF8A80", "#FFCC80", "#81C784", "#66B2FF", "#80DEEA", "#B388FF", "#4FC3F7"] // Light colorful palette (orange first)
+    : ["#42B4AC", "#4AC2BA", "#5BD3C9", "#6DDDD3", "#85E5DC", "#A5EDE7"]; // Monochrome teal
 
-  // Gradient colors for bar chart
-  const barGradients = {
-    start: "#5BD3C9", // Start with lighter teal
-    end: "#42B4AC", // End with darker teal
-  };
+  // Gradient colors for bar chart (only used when not colorful)
+  const barGradients = useColorfulCharts 
+    ? { start: "#EA4335", end: "#FF6D01" } // Red to orange gradient
+    : { start: "#5BD3C9", end: "#42B4AC" }; // Monochrome teal gradient
 
   // If there's an error, display it
   if (error) {
@@ -100,13 +107,36 @@ export const TopTeamsChart: React.FC<TopTeamsChartProps> = ({
 
   return (
     <div
-      className={`w-full bg-[#FFFDF5] p-4 rounded-lg shadow-sm border border-gray-200 ${className}`}
+      className={`w-full ${useColorfulCharts ? 'bg-white' : 'bg-[#FFFDF5]'} rounded-lg ${className}`}
     >
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between">
-        <h2 className="text-lg font-semibold mb-2 sm:mb-0 text-gray-800">
-          Top Teams
-        </h2>
-        <div className="flex flex-wrap gap-2">
+      {!hideTitle && (
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between">
+          <h2 className="text-lg font-semibold mb-2 sm:mb-0 text-gray-800">
+            Top Teams
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            <PeriodSelector
+              value={period}
+              onChange={updatePeriod}
+              className="mr-2"
+            />
+            <LimitSelector
+              value={limit}
+              options={limitOptions}
+              onChange={updateLimit}
+              className="mr-2"
+            />
+            <ViewToggle
+              value={viewType}
+              options={viewOptions}
+              onChange={setViewType}
+            />
+          </div>
+        </div>
+      )}
+
+      {hideTitle && (
+        <div className="flex flex-wrap gap-2 justify-end mb-4">
           <PeriodSelector
             value={period}
             onChange={updatePeriod}
@@ -124,7 +154,7 @@ export const TopTeamsChart: React.FC<TopTeamsChartProps> = ({
             onChange={setViewType}
           />
         </div>
-      </div>
+      )}
 
       {loading ? (
         <div className="h-64">
@@ -138,23 +168,36 @@ export const TopTeamsChart: React.FC<TopTeamsChartProps> = ({
             Try changing the time period or check back later.
           </p>
         </div>
-      ) : viewType === "bar" ? (
-        <HorizontalBarChart
-          data={chartData}
-          dataKey="value"
-          barColor="#42B4AC"
-          useGradient={true}
-          gradientStart={barGradients.start}
-          gradientEnd={barGradients.end}
-        />
       ) : (
-        <PieChart
-          data={chartData}
-          dataKey="value"
-          colors={pieColors}
-          maxHeight={350}
-          outerRadius={120}
-        />
+        <div className="chart-container min-h-[320px] w-full flex items-center justify-center">
+          {viewType === "bar" ? (
+            <div className="h-[320px] w-full py-2">
+              <HorizontalBarChart
+                data={chartData}
+                dataKey="value"
+                barColor={useColorfulCharts ? undefined : "#42B4AC"}
+                useGradient={!useColorfulCharts}
+                useCustomBarColors={useColorfulCharts}
+                gradientStart={barGradients.start}
+                gradientEnd={barGradients.end}
+                maxHeight={320}
+                minWidth={400}
+              />
+            </div>
+          ) : (
+            <div className="h-[320px] w-full py-2 px-2 sm:px-4">
+              <PieChart
+                data={chartData}
+                dataKey="value"
+                colors={pieColors}
+                maxHeight={320}
+                minWidth={400}
+                outerRadius={70}
+                useColorfulChart={useColorfulCharts}
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

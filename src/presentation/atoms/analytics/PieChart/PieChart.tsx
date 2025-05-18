@@ -13,6 +13,7 @@ import {
 interface DataItem {
   name: string;
   value: number;
+  color?: string;
   [key: string]: any;
 }
 
@@ -65,6 +66,12 @@ interface PieChartProps {
   showLegend?: boolean;
 
   /**
+   * Whether to use colorful chart theme instead of monochrome
+   * @default false
+   */
+  useColorfulChart?: boolean;
+
+  /**
    * Additional CSS classes
    */
   className?: string;
@@ -83,6 +90,7 @@ export const PieChart: React.FC<PieChartProps> = ({
   maxHeight = 400,
   minWidth = 300,
   showLegend = true,
+  useColorfulChart = false,
   className = "",
 }) => {
   // Handle empty data
@@ -96,12 +104,31 @@ export const PieChart: React.FC<PieChartProps> = ({
     );
   }
 
+  // Define vibrant colorful palette for the chart
+  const colorfulPalette = [
+    "#66B2FF", // Light Blue
+    "#FF8A80", // Light Red
+    "#FFCC80", // Light Orange
+    "#81C784", // Light Green
+    "#FFB74D", // Light Amber
+    "#80DEEA", // Light Cyan
+    "#B388FF", // Light Purple
+    "#4FC3F7", // Light Sky Blue
+    "#9575CD", // Light Deep Purple
+    "#7FCCAF", // Light Teal
+    "#FF8A65", // Light Deep Orange
+    "#F06292", // Light Pink
+  ];
+
+  // Choose which colors to use based on useColorfulChart prop
+  const chartColors = useColorfulChart ? colorfulPalette : colors;
+
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-[#FFFDF5] p-3 border border-gray-200 rounded-md shadow-md text-sm">
+        <div className={`${useColorfulChart ? 'bg-white' : 'bg-[#FFFDF5]'} p-3 border border-gray-200 rounded-md shadow-md text-sm`}>
           <p className="font-semibold text-gray-800">{data.name}</p>
           <p className="text-gray-600 mt-1">{`${dataKey}: ${data.value}`}</p>
         </div>
@@ -110,7 +137,7 @@ export const PieChart: React.FC<PieChartProps> = ({
     return null;
   };
 
-  // Define gradients for pie slices
+  // Define gradients for pie slices (for monochrome mode)
   const gradients = [
     { id: "gradient1", start: "#4AC2BA", end: "#42B4AC" }, // Teal
     { id: "gradient2", start: "#5BD3C9", end: "#4AC2BA" }, // Light teal
@@ -120,15 +147,35 @@ export const PieChart: React.FC<PieChartProps> = ({
     { id: "gradient6", start: "#C8F5F1", end: "#A5EDE7" }, // Almost white teal
   ];
 
+  // Define colorful gradients for vibrant mode
+  const colorfulGradients = [
+    { id: "gradient-blue", start: "#66B2FF", end: "#90CAF9" },       // Light Blue
+    { id: "gradient-red", start: "#FF8A80", end: "#FFCDD2" },         // Light Red
+    { id: "gradient-orange", start: "#FFCC80", end: "#FFE0B2" },     // Light Orange
+    { id: "gradient-green", start: "#81C784", end: "#A5D6A7" },       // Light Green
+    { id: "gradient-amber", start: "#FFB74D", end: "#FFECB3" },       // Light Amber
+    { id: "gradient-cyan", start: "#80DEEA", end: "#B2EBF2" },        // Light Cyan
+    { id: "gradient-purple", start: "#B388FF", end: "#D1C4E9" },      // Light Purple
+    { id: "gradient-skyblue", start: "#4FC3F7", end: "#B3E5FC" },    // Light Sky Blue
+  ];
+
+  // Choose which gradients to use
+  const chartGradients = useColorfulChart ? colorfulGradients : gradients;
+
+  // Calculate adjusted outerRadius based on container size and screen size
+  // Use a smaller radius on mobile screens
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const adjustedOuterRadius = Math.min(outerRadius, isMobile ? 50 : 70);
+
   return (
     <div
       className={`w-full ${className}`}
       style={{ height: `${maxHeight}px`, minWidth: `${minWidth}px` }}
     >
       <ResponsiveContainer width="100%" height="100%">
-        <RechartsPieChart>
+        <RechartsPieChart margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <defs>
-            {gradients.map((gradient) => (
+            {chartGradients.map((gradient) => (
               <linearGradient
                 key={gradient.id}
                 id={gradient.id}
@@ -149,19 +196,25 @@ export const PieChart: React.FC<PieChartProps> = ({
             cx="50%"
             cy="50%"
             innerRadius={innerRadius}
-            outerRadius={outerRadius}
+            outerRadius={adjustedOuterRadius}
             fill="#42B4AC"
             paddingAngle={2}
-            label={({ name, percent }) =>
-              `${name} (${(percent * 100).toFixed(0)}%)`
-            }
-            labelLine={true}
+            label={({ name, percent }) => {
+              // On mobile, only show percentages, not names
+              if (isMobile) {
+                return `${(percent * 100).toFixed(0)}%`;
+              }
+              // On larger screens, truncate long names to prevent overlap
+              const displayName = name.length > 12 ? `${name.substring(0, 10)}...` : name;
+              return `${displayName} (${(percent * 100).toFixed(0)}%)`;
+            }}
+            labelLine={{ stroke: '#999', strokeWidth: 0.5, strokeDasharray: "2 2", strokeLinecap: "round" }}
           >
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={`url(#${gradients[index % gradients.length].id})`}
-                stroke={colors[index % colors.length]}
+                fill={`url(#${chartGradients[index % chartGradients.length].id})`}
+                stroke={chartColors[index % chartColors.length]}
                 strokeWidth={1}
               />
             ))}
@@ -169,12 +222,20 @@ export const PieChart: React.FC<PieChartProps> = ({
           <Tooltip content={<CustomTooltip />} />
           {showLegend && (
             <Legend
-              layout="vertical"
-              align="right"
-              verticalAlign="middle"
+              layout={isMobile ? "horizontal" : "vertical"}
+              align={isMobile ? "center" : "right"}
+              verticalAlign={isMobile ? "bottom" : "middle"}
               iconType="circle"
+              wrapperStyle={isMobile ? 
+                { fontSize: '0.75rem', marginTop: '10px' } : 
+                { paddingLeft: 20, fontSize: '0.85rem' }
+              }
               formatter={(value: string) => (
-                <span className="text-gray-700">{value}</span>
+                <span className="text-gray-700 text-xs sm:text-sm">
+                  {value.length > (isMobile ? 10 : 15) ? 
+                    `${value.substring(0, isMobile ? 8 : 12)}...` : 
+                    value}
+                </span>
               )}
             />
           )}

@@ -20,6 +20,14 @@ interface TrendingKeywordsChartProps {
    * Additional CSS classes
    */
   className?: string;
+  /**
+   * Hide the chart title
+   */
+  hideTitle?: boolean;
+  /**
+   * Use colorful chart theme instead of monochrome
+   */
+  useColorfulCharts?: boolean;
 }
 
 /**
@@ -28,6 +36,8 @@ interface TrendingKeywordsChartProps {
  */
 export const TrendingKeywordsChart: React.FC<TrendingKeywordsChartProps> = ({
   className = "",
+  hideTitle = false,
+  useColorfulCharts = false,
 }) => {
   // Available limit options
   const limitOptions = [10, 20, 30];
@@ -63,16 +73,18 @@ export const TrendingKeywordsChart: React.FC<TrendingKeywordsChartProps> = ({
   });
 
   // Transform data for the chart
-  const chartData = data.map((keyword) => ({
+  const chartData = data.map((keyword, index) => ({
     name: keyword.keyword,
     value: keyword.count,
+    color: useColorfulCharts 
+      ? ["#B388FF", "#66B2FF", "#80DEEA", "#81C784", "#FFCC80", "#FFB74D", "#FF8A80", "#F06292"][index % 8]
+      : undefined
   }));
 
-  // Gradient colors for bar chart
-  const barGradients = {
-    start: "#5BD3C9", // Start with lighter teal
-    end: "#42B4AC", // End with darker teal
-  };
+  // Gradient colors for bar chart (only used when not colorful)
+  const barGradients = useColorfulCharts
+    ? { start: "#B388FF", end: "#66B2FF" } // Light purple to light blue gradient
+    : { start: "#5BD3C9", end: "#42B4AC" }; // Monochrome teal gradient
 
   // If there's an error, display it
   if (error) {
@@ -91,13 +103,36 @@ export const TrendingKeywordsChart: React.FC<TrendingKeywordsChartProps> = ({
 
   return (
     <div
-      className={`w-full bg-[#FFFDF5] p-4 rounded-lg shadow-sm border border-gray-200 ${className}`}
+      className={`w-full ${useColorfulCharts ? 'bg-white' : 'bg-[#FFFDF5]'} rounded-lg ${className}`}
     >
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between">
-        <h2 className="text-lg font-semibold mb-2 sm:mb-0 text-gray-800">
-          Trending Keywords
-        </h2>
-        <div className="flex flex-wrap gap-2">
+      {!hideTitle && (
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between">
+          <h2 className="text-lg font-semibold mb-2 sm:mb-0 text-gray-800">
+            Trending Keywords
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            <PeriodSelector
+              value={period}
+              onChange={updatePeriod}
+              className="mr-2"
+            />
+            <LimitSelector
+              value={limit}
+              options={limitOptions}
+              onChange={updateLimit}
+              className="mr-2"
+            />
+            <ViewToggle
+              value={viewType}
+              options={viewOptions}
+              onChange={setViewType}
+            />
+          </div>
+        </div>
+      )}
+
+      {hideTitle && (
+        <div className="flex flex-wrap gap-2 justify-end mb-4">
           <PeriodSelector
             value={period}
             onChange={updatePeriod}
@@ -115,7 +150,7 @@ export const TrendingKeywordsChart: React.FC<TrendingKeywordsChartProps> = ({
             onChange={setViewType}
           />
         </div>
-      </div>
+      )}
 
       {loading ? (
         <div className="h-64">
@@ -129,24 +164,35 @@ export const TrendingKeywordsChart: React.FC<TrendingKeywordsChartProps> = ({
             Try changing the time period or check back when more kudos cards have been created.
           </p>
         </div>
-      ) : viewType === "bar" ? (
-        <HorizontalBarChart
-          data={chartData}
-          dataKey="value"
-          barColor="#42B4AC"
-          useGradient={true}
-          gradientStart={barGradients.start}
-          gradientEnd={barGradients.end}
-        />
       ) : (
-        <TagCloud
-          data={chartData}
-          dataKey="value"
-          colorScheme="teal"
-          maxHeight={350}
-          minFontSize={14}
-          maxFontSize={40}
-        />
+        <div className="chart-container min-h-[320px] w-full flex items-center justify-center">
+          {viewType === "bar" ? (
+            <div className="h-[320px] w-full py-2">
+              <HorizontalBarChart
+                data={chartData}
+                dataKey="value"
+                barColor={useColorfulCharts ? undefined : "#42B4AC"}
+                useGradient={!useColorfulCharts}
+                useCustomBarColors={useColorfulCharts}
+                gradientStart={barGradients.start}
+                gradientEnd={barGradients.end}
+                maxHeight={320}
+                minWidth={400}
+              />
+            </div>
+          ) : (
+            <div className="h-[320px] w-full py-2 px-2 sm:px-4">
+              <TagCloud
+                data={chartData}
+                dataKey="value"
+                colorScheme={useColorfulCharts ? "multi" : "teal"}
+                maxHeight={320}
+                minFontSize={14}
+                maxFontSize={40}
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
