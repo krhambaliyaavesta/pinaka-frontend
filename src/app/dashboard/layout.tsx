@@ -181,6 +181,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <FaChartBar className="mr-3" />
                 <span>Analytics</span>
               </Link>
+              <Link
+                href="/kudos-wall"
+                className="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-teal-50 hover:text-teal-700"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FaUsers className="mr-3" />
+                <span>Kudos Wall</span>
+              </Link>
             </nav>
             <div className="mt-5 pt-5 border-t border-gray-200">
               <div className="flex items-center">

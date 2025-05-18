@@ -178,6 +178,13 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <span>Kudos Wall</span>
               </Link>
+              <Link
+                href="/sudo-walls"
+                className="flex items-center px-3 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span>Sudo Walls</span>
+              </Link>
 
               {!user && (
                 <Link

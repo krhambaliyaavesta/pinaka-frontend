@@ -35,7 +35,7 @@ export function AnalyticsDashboardTemplate({
         Analytics Dashboard
       </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <h2 className="text-xl font-semibold mb-4">Top Recipients</h2>
           <TopRecipientsChart />
