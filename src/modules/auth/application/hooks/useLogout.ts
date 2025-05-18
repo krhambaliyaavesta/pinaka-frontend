@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AuthModule } from "../../AuthModule";
+import { useRouter } from "next/navigation";
 
 interface UseLogoutReturn {
   logout: () => Promise<void>;
@@ -14,6 +15,7 @@ interface UseLogoutReturn {
 export function useLogout(): UseLogoutReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const router = useRouter();
 
   /**
    * Handles the logout process
@@ -25,6 +27,9 @@ export function useLogout(): UseLogoutReturn {
 
       const logoutUseCase = AuthModule.getLogoutUseCase();
       await logoutUseCase.execute();
+
+      // Redirect to home page after successful logout
+      router.push("/");
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to logout");
       setError(error);
