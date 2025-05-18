@@ -16,7 +16,7 @@ const MainLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
 
   // Check if current path is one that should not use MainLayout
   // These paths have their own custom layouts
-  const excludedPaths = ["/login", "/dashboard", "/waiting-approval"];
+  const excludedPaths = ["/", "/login", "/dashboard", "/waiting-approval"];
 
   // Check if current path starts with any of the excluded paths
   const shouldExcludeLayout = excludedPaths.some((path) =>
