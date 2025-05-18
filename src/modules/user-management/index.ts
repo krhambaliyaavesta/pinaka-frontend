@@ -14,4 +14,10 @@ export {
   useUpdateUser,
 } from "./application/hooks";
 
+// Export application layer hooks and use cases
+export { useUserManagement } from "./application/hooks/useUserManagement";
+
+// Export domain types and interfaces
+export type { UpdateUserData } from "./domain/interfaces/IUserManagementRepository";
+
 // Hooks will be exported here in later phases
