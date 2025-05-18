@@ -13,7 +13,8 @@ async function checkAlreadyAuthenticated() {
   if (authToken && authToken.value) {
     redirect("/kudos-wall");
   } else {
-    redirect("/login");
+    // redirect("/login");
+    return null;
   }
 }
 
