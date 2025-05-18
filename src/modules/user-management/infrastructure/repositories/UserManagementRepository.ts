@@ -112,7 +112,7 @@ export class UserManagementRepository implements IUserManagementRepository {
       const payload = { approvalStatus };
 
       const response = await this.httpClient.put<UpdateUserStatusResponse>(
-        `/api/auth/users/${userId}`,
+        `/api/admin/users/${userId}`,
         payload
       );
 
@@ -150,7 +150,7 @@ export class UserManagementRepository implements IUserManagementRepository {
       };
 
       const response = await this.httpClient.put<UpdateUserStatusResponse>(
-        `/api/auth/users/${userId}`,
+        `/api/admin/users/${userId}`,
         payload
       );
 
@@ -295,7 +295,7 @@ export class UserManagementRepository implements IUserManagementRepository {
   async updateUser(userId: string, data: UpdateUserData): Promise<User> {
     try {
       const response = await this.httpClient.put<UpdateUserStatusResponse>(
-        `/api/auth/users/${userId}`,
+        `/api/admin/users/${userId}`,
         data
       );
 

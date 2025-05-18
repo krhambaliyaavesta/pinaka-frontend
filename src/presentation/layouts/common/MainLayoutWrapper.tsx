@@ -22,6 +22,7 @@ const MainLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
     "/waiting-approval",
     "/kudos-wall",
     "/analytics",
+    "/profile",
   ];
 
   // Check if current path starts with any of the excluded paths
