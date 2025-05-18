@@ -9,21 +9,21 @@ export class CardAdapter {
    * Maps a Card domain entity to a KudosCardType presentation model
    */
   static toKudosCard(card: Card): KudosCardType {
-    // Map categoryId to type (assuming a mapping exists)
-    const typeMap: Record<number, KudosCardType["type"]> = {
-      1: "thankYou",
-      2: "greatJob",
-      3: "teamwork",
-      4: "support",
-      5: "problemSolving",
-      6: "guidingLight",
-      7: "codeQuality",
-      8: "aboveAndBeyond",
+    // Map category names to KudosCardType
+    const typeMap: Record<string, KudosCardType["type"]> = {
+      "Innovation": "codeQuality",
+      "Helping Hand": "support",
+      "Problem Solving": "problemSolving",
+      "Leadership": "guidingLight",
+      "Customer Focus": "aboveAndBeyond",
+      "Teamwork": "teamwork",
+      "Quality Work": "codeQuality",
     };
+
 
     return {
       id: card.id,
-      type: typeMap[card.categoryId] || "thankYou", // Default to thankYou if mapping not found
+      type: typeMap[card.categoryName] || "thankYou", // Default to thankYou if mapping not found
       title: card.categoryName,
       description: card.message,
       memberName: card.recipientName,

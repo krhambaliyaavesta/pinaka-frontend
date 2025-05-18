@@ -25,6 +25,7 @@ export function useKudosCards(): UseKudosCardsResult {
       const getCardsUseCase = CardsModule.createGetCardsUseCase();
       const domainCards = await getCardsUseCase.execute();
 
+
       // Transform domain cards to presentation cards
       const kudosCards = CardAdapter.toKudosCards(domainCards);
 

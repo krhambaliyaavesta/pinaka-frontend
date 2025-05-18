@@ -56,16 +56,23 @@ export function PendingUsersList({
 
     if (users.length === 0) {
       return (
-        <div className="p-8 bg-gray-50 rounded-lg border border-gray-200 text-center">
-          <p className="text-gray-600">No pending users found</p>
+        <div className="bg-teal-50 border border-teal-200 rounded-lg p-8 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-teal-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 className="text-lg font-semibold text-teal-800 mb-2">No pending users</h3>
+          <p className="text-teal-700">There are currently no users waiting for approval.</p>
         </div>
       );
     }
 
     if (filteredUsers.length === 0) {
       return (
-        <div className="p-8 bg-gray-50 rounded-lg border border-gray-200 text-center">
-          <p className="text-gray-600">No users match your search</p>
+        <div className="bg-teal-50 border border-teal-200 rounded-lg p-6 text-center">
+          <h3 className="text-lg font-semibold text-teal-800 mb-2">No matching users</h3>
+          <p className="text-teal-700">
+            No users match your search query. Try a different search term.
+          </p>
         </div>
       );
     }

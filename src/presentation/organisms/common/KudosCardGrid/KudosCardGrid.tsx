@@ -108,6 +108,7 @@ export function KudosCardGrid({ onCardSelect }: KudosCardGridProps) {
       );
     }
 
+
     // Filter by category (card type)
     if (filters.category) {
       result = result.filter((card) => card.type === filters.category?.id);
