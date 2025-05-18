@@ -19,6 +19,14 @@ interface TopRecipientsChartProps {
    * Additional CSS classes
    */
   className?: string;
+  /**
+   * Hide the chart title
+   */
+  hideTitle?: boolean;
+  /**
+   * Use colorful chart theme instead of monochrome
+   */
+  useColorfulCharts?: boolean;
 }
 
 /**
@@ -27,6 +35,8 @@ interface TopRecipientsChartProps {
  */
 export const TopRecipientsChart: React.FC<TopRecipientsChartProps> = ({
   className = "",
+  hideTitle = false,
+  useColorfulCharts = false,
 }) => {
   // Available limit options
   const limitOptions = [5, 10, 20];
@@ -62,26 +72,23 @@ export const TopRecipientsChart: React.FC<TopRecipientsChartProps> = ({
   });
 
   // Transform data for the chart
-  const chartData = data.map((recipient) => ({
+  const chartData = data.map((recipient, index) => ({
     name: recipient.recipientName,
     value: recipient.count,
+    color: useColorfulCharts 
+      ? ["#66B2FF", "#FF8A80", "#FFCC80", "#81C784", "#FFB74D", "#80DEEA", "#B388FF", "#4FC3F7"][index % 8]
+      : undefined
   }));
 
   // Colors for the pie chart
-  const pieColors = [
-    "#42B4AC", // Primary teal
-    "#4AC2BA", // Light teal
-    "#5BD3C9", // Lighter teal
-    "#6DDDD3", // Even lighter teal
-    "#85E5DC", // Very light teal
-    "#A5EDE7", // Ultra light teal
-  ];
+  const pieColors = useColorfulCharts 
+    ? ["#66B2FF", "#FF8A80", "#FFCC80", "#81C784", "#FFB74D", "#80DEEA", "#B388FF", "#4FC3F7"] // Light colorful palette
+    : ["#42B4AC", "#4AC2BA", "#5BD3C9", "#6DDDD3", "#85E5DC", "#A5EDE7"]; // Monochrome teal
 
-  // Gradient colors for bar chart
-  const barGradients = {
-    start: "#5BD3C9", // Start with lighter teal
-    end: "#42B4AC", // End with darker teal
-  };
+  // Gradient colors for bar chart (only used when not colorful)
+  const barGradients = useColorfulCharts 
+    ? { start: "#4285F4", end: "#0F9D58" } // Colorful blue to green gradient  
+    : { start: "#5BD3C9", end: "#42B4AC" }; // Monochrome teal gradient
 
   // If there's an error, display it
   if (error) {
@@ -100,31 +107,54 @@ export const TopRecipientsChart: React.FC<TopRecipientsChartProps> = ({
 
   return (
     <div
-      className={`w-full bg-[#FFFDF5] p-4 rounded-lg shadow-sm border border-gray-200 ${className}`}
+      className={`w-full ${useColorfulCharts ? 'bg-white' : 'bg-[#FFFDF5]'} rounded-lg ${className}`}
     >
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between">
-        <h2 className="text-lg font-semibold mb-2 sm:mb-0 text-gray-800">
-          Top Recipients
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          <PeriodSelector
-            value={period}
-            onChange={updatePeriod}
-            className="mr-2"
-          />
+      {!hideTitle && (
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between">
+          <h2 className="text-lg font-semibold mb-2 sm:mb-0 text-gray-800">
+            Top Recipients
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            <PeriodSelector
+              value={period}
+              onChange={updatePeriod}
+              className="mr-2"
+            />
+            <LimitSelector
+              value={limit}
+              options={limitOptions}
+              onChange={updateLimit}
+              className="mr-2"
+            />
+            <ViewToggle
+              value={viewType}
+              options={viewOptions}
+              onChange={setViewType}
+            />
+          </div>
+        </div>
+      )}
+      
+      {hideTitle && (
+        <div className="flex flex-wrap gap-2 justify-between sm:justify-end mb-4">
+          <div className="flex space-x-2">
+            <PeriodSelector
+              value={period}
+              onChange={updatePeriod}
+            />
+            <ViewToggle
+              value={viewType}
+              options={viewOptions}
+              onChange={setViewType}
+            />
+          </div>
           <LimitSelector
             value={limit}
             options={limitOptions}
             onChange={updateLimit}
-            className="mr-2"
-          />
-          <ViewToggle
-            value={viewType}
-            options={viewOptions}
-            onChange={setViewType}
           />
         </div>
-      </div>
+      )}
 
       {loading ? (
         <div className="h-64">
@@ -138,23 +168,36 @@ export const TopRecipientsChart: React.FC<TopRecipientsChartProps> = ({
             Try changing the time period or check back later.
           </p>
         </div>
-      ) : viewType === "bar" ? (
-        <HorizontalBarChart
-          data={chartData}
-          dataKey="value"
-          barColor="#42B4AC"
-          useGradient={true}
-          gradientStart={barGradients.start}
-          gradientEnd={barGradients.end}
-        />
       ) : (
-        <PieChart
-          data={chartData}
-          dataKey="value"
-          colors={pieColors}
-          maxHeight={350}
-          outerRadius={120}
-        />
+        <div className="chart-container min-h-[280px] sm:min-h-[320px] w-full flex items-center justify-center">
+          {viewType === "bar" ? (
+            <div className="h-[280px] sm:h-[320px] w-full py-2">
+              <HorizontalBarChart
+                data={chartData}
+                dataKey="value"
+                barColor={useColorfulCharts ? undefined : "#42B4AC"}
+                useGradient={!useColorfulCharts}
+                useCustomBarColors={useColorfulCharts}
+                gradientStart={barGradients.start}
+                gradientEnd={barGradients.end}
+                maxHeight={320}
+                minWidth={280}
+              />
+            </div>
+          ) : (
+            <div className="h-[280px] sm:h-[320px] w-full py-2 px-2">
+              <PieChart
+                data={chartData}
+                dataKey="value"
+                colors={pieColors}
+                maxHeight={320}
+                minWidth={280}
+                outerRadius={60}
+                useColorfulChart={useColorfulCharts}
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

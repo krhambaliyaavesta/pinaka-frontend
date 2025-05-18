@@ -29,7 +29,13 @@ const MainLayoutWrapper: React.FC<{ children: React.ReactNode }> = ({
   );
 
   if (shouldExcludeLayout) {
-    return <>{children}</>;
+    // Specifically for kudos-wall and analytics, we want to skip our wrapper since they have their own layouts
+    const isKudosWall = pathname.startsWith("/kudos-wall");
+    const isAnalytics = pathname.startsWith("/analytics");
+
+    if (shouldExcludeLayout || isKudosWall || isAnalytics) {
+      return <>{children}</>;
+    }
   }
 
   return <MainLayout>{children}</MainLayout>;
